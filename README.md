@@ -167,6 +167,10 @@ Validasi:
  - `periodStart` harus lebih kecil atau sama dengan `periodEnd`.
  - Jika validasi gagal, server merespon dengan status `400` dan pesan error yang menjelaskan.
 
+Status pengembangan:
+
+- `2026-06-02`: Validation middleware ditambahkan untuk endpoint laporan; unit tests untuk `reportService` dibuat dan lulus.
+
 ## Catatan
 
 - Frontend saat ini hanya template dasar.

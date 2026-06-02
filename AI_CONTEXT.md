@@ -36,6 +36,9 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - ✅ README updated with testing documentation
 - ✅ Frontend CRUD UI implemented (categories.html, transactions.html)
 - ✅ Phase 5: Frontend integrated with API and tested
+ - ✅ Validation middleware for report endpoints added
+ - ✅ Unit tests for `reportService` added and passed (Jest)
+ - ✅ README updated with request-body docs for reports
 
 ## Application Features (To Build)
 1. Dashboard (Total income, expense, balance, weekly/monthly summary)
@@ -70,6 +73,9 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
  - `2026-06-02`: Phase 5 complete - Frontend pages and scripts added, API integration tested
  - `2026-06-02`: Phase 6 started - Weekly reporting job added (cron + manual trigger)
  - `2026-06-02`: Phase 6 complete - Weekly reporting job added, tested and persisted to DB
+ - `2026-06-02`: Validation middleware added for `POST /api/reports/weekly/run` (periodStart/periodEnd)
+ - `2026-06-02`: Unit tests for `reportService` added and executed (Jest passed)
+ - `2026-06-02`: README updated to document optional request body and validation rules
 
 ## Key Learnings
 1. **Normalization & 1-to-Many Relationships**
