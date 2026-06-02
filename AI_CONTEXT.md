@@ -17,7 +17,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - Version Control: Git
 
 ## Current Phase
-**Phase 3: REST API Development** - Sedang berlangsung
+**Phase 4: REST API Testing** - Sedang berlangsung
 
 ## Current Project Status
 - ✅ Workspace created
@@ -32,6 +32,8 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - ✅ First commit to Git
 - ✅ REST API structure implemented (categories, transactions, dashboard)
 - ✅ Health endpoint verified
+- ✅ Automated API test script added
+- ✅ README updated with testing documentation
 
 ## Application Features (To Build)
 1. Dashboard (Total income, expense, balance, weekly/monthly summary)
@@ -60,6 +62,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
   - Frontend template created with TailwindCSS
   - First Git commit
 - `2026-06-02`: Phase 3 started - REST API structure implemented for categories, transactions, and dashboard
+- `2026-06-02`: Phase 4 started - Automated API test script added and documentation updated
 
 ## Key Learnings
 1. **Normalization & 1-to-Many Relationships**
