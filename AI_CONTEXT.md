@@ -17,7 +17,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - Version Control: Git
 
 ## Current Phase
-**Phase 5: Frontend UI & Integration** - ✅ COMPLETE
+**Phase 6: Weekly Reporting** - ✅ COMPLETE
 
 ## Current Project Status
 - ✅ Workspace created
@@ -69,6 +69,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
  - `2026-06-02`: Phase 5 started - Frontend CRUD UI implemented and integrated with backend
  - `2026-06-02`: Phase 5 complete - Frontend pages and scripts added, API integration tested
  - `2026-06-02`: Phase 6 started - Weekly reporting job added (cron + manual trigger)
+ - `2026-06-02`: Phase 6 complete - Weekly reporting job added, tested and persisted to DB
 
 ## Key Learnings
 1. **Normalization & 1-to-Many Relationships**

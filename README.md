@@ -139,6 +139,12 @@ Endpoint untuk laporan:
 - `GET /api/reports`  -> daftar laporan
 - `POST /api/reports/weekly/run` -> trigger manual pembuatan laporan mingguan
 
+Penjadwalan:
+
+- Cron expression: `5 0 * * 0` (Setiap Minggu pukul 00:05) menggunakan `node-cron`.
+
+Catatan: Job telah diuji dengan `npm run run:weekly` dan hasil laporan disimpan di tabel `reports`.
+
 ## Catatan
 
 - Frontend saat ini hanya template dasar.
