@@ -145,6 +145,28 @@ Penjadwalan:
 
 Catatan: Job telah diuji dengan `npm run run:weekly` dan hasil laporan disimpan di tabel `reports`.
 
+Request Body (opsional)
+
+ - Endpoint `POST /api/reports/weekly/run` menerima body JSON opsional untuk menentukan periode khusus:
+	 - `periodStart`: tanggal mulai dalam format `YYYY-MM-DD`
+	 - `periodEnd`: tanggal akhir dalam format `YYYY-MM-DD`
+
+Contoh body:
+
+```json
+{
+	"periodStart": "2026-05-25",
+	"periodEnd": "2026-05-31"
+}
+```
+
+Validasi:
+
+ - Jika salah satu dari `periodStart` atau `periodEnd` diberikan, maka keduanya wajib.
+ - Format tanggal harus `YYYY-MM-DD`.
+ - `periodStart` harus lebih kecil atau sama dengan `periodEnd`.
+ - Jika validasi gagal, server merespon dengan status `400` dan pesan error yang menjelaskan.
+
 ## Catatan
 
 - Frontend saat ini hanya template dasar.
