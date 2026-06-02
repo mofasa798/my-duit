@@ -14,6 +14,8 @@ const path = require('path');
 const categoriesRouter = require('./routes/categories');
 const transactionsRouter = require('./routes/transactions');
 const dashboardRouter = require('./routes/dashboard');
+const reportsRouter = require('./routes/reports');
+const weeklyJob = require('./jobs/weeklyReport');
 
 const app = express();
 
@@ -40,6 +42,10 @@ app.get('/api/health', (req, res) => {
 app.use('/api/categories', categoriesRouter);
 app.use('/api/transactions', transactionsRouter);
 app.use('/api/dashboard', dashboardRouter);
+app.use('/api/reports', reportsRouter);
+
+// Schedule weekly job (runs in-process)
+weeklyJob.scheduleWeekly();
 
 // Serve main HTML file
 app.get('/', (req, res) => {

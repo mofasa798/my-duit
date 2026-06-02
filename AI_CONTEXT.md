@@ -64,9 +64,11 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
   - Frontend template created with TailwindCSS
   - First Git commit
 - `2026-06-02`: Phase 3 started - REST API structure implemented for categories, transactions, and dashboard
--- `2026-06-02`: Phase 4 started - Automated API test script added and documentation updated
--- `2026-06-02`: Phase 5 started - Frontend CRUD UI implemented and integrated with backend
--- `2026-06-02`: Phase 5 complete - Frontend pages and scripts added, API integration tested
+ - `2026-06-02`: Phase 3 started - REST API structure implemented for categories, transactions, and dashboard
+ - `2026-06-02`: Phase 4 started - Automated API test script added and documentation updated
+ - `2026-06-02`: Phase 5 started - Frontend CRUD UI implemented and integrated with backend
+ - `2026-06-02`: Phase 5 complete - Frontend pages and scripts added, API integration tested
+ - `2026-06-02`: Phase 6 started - Weekly reporting job added (cron + manual trigger)
 
 ## Key Learnings
 1. **Normalization & 1-to-Many Relationships**

@@ -124,6 +124,21 @@ Script ini akan:
 
 Catatan: Automated API tests telah dijalankan dan lulus selama pengembangan.
 
+## Weekly Reports (Phase 6)
+
+Server menyediakan job mingguan yang akan menghasilkan laporan setiap hari Minggu.
+
+Untuk men-trigger laporan secara manual (testing), jalankan:
+
+```bash
+npm run run:weekly
+```
+
+Endpoint untuk laporan:
+
+- `GET /api/reports`  -> daftar laporan
+- `POST /api/reports/weekly/run` -> trigger manual pembuatan laporan mingguan
+
 ## Catatan
 
 - Frontend saat ini hanya template dasar.
