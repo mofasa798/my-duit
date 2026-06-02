@@ -16,6 +16,7 @@ My Duit adalah aplikasi yang membantu pengguna mencatat transaksi keuangan, meli
 - CRUD transaksi
 - Struktur aplikasi modular dengan routes, controllers, services, dan database helper
 - Database schema untuk categories, transactions, dan reports
+ - Frontend CRUD UI untuk `categories` dan `transactions` (pages: `/html/categories.html`, `/html/transactions.html`)
 
 ## Struktur Proyek
 
@@ -84,6 +85,13 @@ npm start
 http://localhost:3000
 ```
 
+Untuk mengakses UI CRUD yang sudah tersedia langsung:
+
+```
+http://localhost:3000/html/categories.html
+http://localhost:3000/html/transactions.html
+```
+
 ## Endpoint API
 
 - `GET /api/health`
@@ -113,6 +121,8 @@ Script ini akan:
 - Menguji CRUD kategori
 - Menguji CRUD transaksi
 - Menguji endpoint dashboard
+
+Catatan: Automated API tests telah dijalankan dan lulus selama pengembangan.
 
 ## Catatan
 
