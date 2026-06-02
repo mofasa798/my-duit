@@ -12,7 +12,8 @@ const listReports = async (req, res, next) => {
 
 const runWeekly = async (req, res, next) => {
   try {
-    const report = await weeklyJob.runWeeklyReport();
+    const { periodStart, periodEnd } = req.body || {};
+    const report = await weeklyJob.runWeeklyReport(periodStart, periodEnd);
     res.json({ success: true, data: report });
   } catch (err) {
     next(err);

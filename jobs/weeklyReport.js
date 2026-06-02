@@ -15,8 +15,8 @@ const computePeriodForLastWeek = () => {
   return { periodStart: formatDate(sunday), periodEnd: formatDate(saturday) };
 };
 
-const runWeeklyReport = async () => {
-  const { periodStart, periodEnd } = computePeriodForLastWeek();
+const runWeeklyReport = async (periodStartArg, periodEndArg) => {
+  const { periodStart, periodEnd } = periodStartArg && periodEndArg ? { periodStart: periodStartArg, periodEnd: periodEndArg } : computePeriodForLastWeek();
   const report = await reportService.computeWeeklyReport(periodStart, periodEnd);
   await reportService.saveReport('weekly', periodStart, periodEnd, report.totalIncome, report.totalExpense, report.netSavings);
   console.log('Weekly report generated for', periodStart, 'to', periodEnd);
