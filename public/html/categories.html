@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kategori - My Duit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+  <div class="max-w-4xl mx-auto p-6">
+    <header class="mb-6">
+      <h2 class="text-2xl font-bold">Categories</h2>
+      <p class="text-slate-400">Manage your income and expense categories</p>
+      <p class="mt-2"><a href="/html/index.html" class="text-blue-300">← Back to Dashboard</a></p>
+    </header>
+
+    <section class="mb-6 bg-slate-800 p-4 rounded-lg border border-slate-700">
+      <h3 class="font-semibold mb-2">Add Category</h3>
+      <form id="category-form" class="flex gap-2">
+        <input id="cat-name" placeholder="Name" class="flex-1 p-2 rounded bg-slate-700 border border-slate-600" />
+        <select id="cat-type" class="p-2 rounded bg-slate-700 border border-slate-600">
+          <option value="expense">Expense</option>
+          <option value="income">Income</option>
+        </select>
+        <button class="px-4 py-2 bg-blue-500 rounded">Add</button>
+      </form>
+    </section>
+
+    <section id="categories-list" class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+      <h3 class="font-semibold mb-2">Existing Categories</h3>
+      <div id="categories-container">Loading...</div>
+    </section>
+  </div>
+
+  <script src="/js/api-client.js"></script>
+  <script src="/js/categories.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transactions - My Duit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+  <div class="max-w-5xl mx-auto p-6">
+    <header class="mb-6">
+      <h2 class="text-2xl font-bold">Transactions</h2>
+      <p class="text-slate-400">Create and manage your transactions</p>
+      <p class="mt-2"><a href="/html/index.html" class="text-blue-300">← Back to Dashboard</a></p>
+    </header>
+
+    <section class="mb-6 bg-slate-800 p-4 rounded-lg border border-slate-700">
+      <h3 class="font-semibold mb-2">Add Transaction</h3>
+      <form id="transaction-form" class="grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
+        <select id="txn-category" class="p-2 rounded bg-slate-700 border border-slate-600 md:col-span-1"></select>
+        <input id="txn-amount" placeholder="Amount" type="number" class="p-2 rounded bg-slate-700 border border-slate-600 md:col-span-1" />
+        <input id="txn-date" type="date" class="p-2 rounded bg-slate-700 border border-slate-600 md:col-span-1" />
+        <input id="txn-desc" placeholder="Description" class="p-2 rounded bg-slate-700 border border-slate-600 md:col-span-3" />
+        <button id="txn-submit" class="px-4 py-2 bg-blue-500 rounded md:col-span-1">Add Transaction</button>
+      </form>
+    </section>
+
+    <section id="transactions-list" class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+      <h3 class="font-semibold mb-2">Recent Transactions</h3>
+      <div id="transactions-container">Loading...</div>
+    </section>
+  </div>
+
+  <script src="/js/api-client.js"></script>
+  <script src="/js/transactions.js"></script>
+</body>
+</html>
