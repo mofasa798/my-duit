@@ -173,6 +173,30 @@ Status pengembangan:
 - `2026-06-02`: Validation middleware ditambahkan untuk endpoint laporan; unit tests untuk `reportService` dibuat dan lulus.
  - `2026-06-02`: Integration tests untuk `POST /api/reports/weekly/run` ditambahkan (supertest) dan lulus.
 
+Contoh `curl`
+
+- Memanggil daftar laporan:
+
+```bash
+curl -s http://localhost:3000/api/reports | jq
+```
+
+- Men-trigger laporan mingguan (manual) tanpa body (server akan gunakan periode default):
+
+```bash
+curl -X POST http://localhost:3000/api/reports/weekly/run -H "Content-Type: application/json"
+```
+
+- Men-trigger laporan dengan periode custom:
+
+```bash
+curl -X POST http://localhost:3000/api/reports/weekly/run \
+	-H "Content-Type: application/json" \
+	-d '{"periodStart":"2026-05-25","periodEnd":"2026-05-31"}' | jq
+```
+
+Catatan: `jq` berguna untuk memformat output JSON di terminal, tapi opsional.
+
 ## Catatan
 
 - Frontend saat ini hanya template dasar.
