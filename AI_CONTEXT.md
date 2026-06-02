@@ -17,12 +17,21 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - Version Control: Git
 
 ## Current Phase
-**Phase 1: Project Planning** - Sedang dimulai
+**Phase 3: REST API Development** - Sedang berlangsung
 
 ## Current Project Status
-- ✅ Workspace created (kosong)
+- ✅ Workspace created
 - ✅ AI_CONTEXT.md created
-- ⏳ Project planning phase
+- ✅ Git initialized
+- ✅ npm dependencies installed
+- ✅ Folder structure created
+- ✅ Database schema designed & initialized
+- ✅ Express app setup with middleware
+- ✅ Frontend template with TailwindCSS
+- ✅ API client JavaScript
+- ✅ First commit to Git
+- ✅ REST API structure implemented (categories, transactions, dashboard)
+- ✅ Health endpoint verified
 
 ## Application Features (To Build)
 1. Dashboard (Total income, expense, balance, weekly/monthly summary)
@@ -43,6 +52,14 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - `2026-06-02`: Database schema designed (3 tabel)
 - `2026-06-02`: Folder structure planned
 - `2026-06-02`: Mini challenge completed - learned about ON DELETE RESTRICT & Event Time
+- `2026-06-02`: Phase 2 Complete - Project initialized & database created
+  - Installed Express, SQLite3, node-cron
+  - Created folder structure (config, routes, controllers, services, etc)
+  - Database schema created with 3 tables: categories, transactions, reports
+  - Express app running on port 3000
+  - Frontend template created with TailwindCSS
+  - First Git commit
+- `2026-06-02`: Phase 3 started - REST API structure implemented for categories, transactions, and dashboard
 
 ## Key Learnings
 1. **Normalization & 1-to-Many Relationships**
@@ -71,10 +88,20 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 
 ## Next Steps
 1. ✅ Phase 1 DONE: Database & Folder Structure planned
-2. → Phase 2: Initialize project & git setup
-3. → Phase 3: Install dependencies (Express, SQLite3, etc)
-4. → Phase 4: Create database schema
-5. → Phase 5: Build REST API (Routes & Controllers)
+2. ✅ Phase 2 DONE: Project initialized & database created
+3. → Phase 3: Building REST API (Routes, Controllers, Services)
+   - [ ] Create category controller & routes
+   - [ ] Create transaction controller & routes
+   - [ ] Create dashboard controller & routes
+   - [ ] Create service layer for business logic
+   - [ ] Error handling middleware
+4. → Phase 4: Test API endpoints
+5. → Phase 5: Build Frontend UI
+6. → Phase 6: Weekly & Monthly reports
+7. → Phase 7: Export features
+8. → Phase 8: Refactoring & optimization
+9. → Phase 9: Testing & debugging
+10. → Phase 10: Portfolio preparation
 
 ## Notes
 - Learning project first, portfolio second

@@ -11,6 +11,10 @@
 const express = require('express');
 const path = require('path');
 
+const categoriesRouter = require('./routes/categories');
+const transactionsRouter = require('./routes/transactions');
+const dashboardRouter = require('./routes/dashboard');
+
 const app = express();
 
 // ==================== MIDDLEWARE ====================
@@ -32,16 +36,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// API route mounting
+app.use('/api/categories', categoriesRouter);
+app.use('/api/transactions', transactionsRouter);
+app.use('/api/dashboard', dashboardRouter);
+
 // Serve main HTML file
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
 });
-
-// TODO: Routes akan ditambahkan di sini
-// - /api/categories
-// - /api/transactions
-// - /api/dashboard
-// - /api/reports
 
 // ==================== ERROR HANDLING ====================
 
