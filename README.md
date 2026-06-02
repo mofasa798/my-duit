@@ -121,6 +121,7 @@ Script ini akan:
 - Menguji CRUD kategori
 - Menguji CRUD transaksi
 - Menguji endpoint dashboard
+ - Menjalankan unit tests (Jest) dan integration tests (Supertest) untuk endpoint kritis
 
 Catatan: Automated API tests telah dijalankan dan lulus selama pengembangan.
 
@@ -170,6 +171,7 @@ Validasi:
 Status pengembangan:
 
 - `2026-06-02`: Validation middleware ditambahkan untuk endpoint laporan; unit tests untuk `reportService` dibuat dan lulus.
+ - `2026-06-02`: Integration tests untuk `POST /api/reports/weekly/run` ditambahkan (supertest) dan lulus.
 
 ## Catatan
 

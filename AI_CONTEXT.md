@@ -39,6 +39,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
  - ✅ Validation middleware for report endpoints added
  - ✅ Unit tests for `reportService` added and passed (Jest)
  - ✅ README updated with request-body docs for reports
+ - ✅ Integration tests for `POST /api/reports/weekly/run` added and passed (Supertest + Jest)
 
 ## Application Features (To Build)
 1. Dashboard (Total income, expense, balance, weekly/monthly summary)
@@ -76,6 +77,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
  - `2026-06-02`: Validation middleware added for `POST /api/reports/weekly/run` (periodStart/periodEnd)
  - `2026-06-02`: Unit tests for `reportService` added and executed (Jest passed)
  - `2026-06-02`: README updated to document optional request body and validation rules
+ - `2026-06-02`: Integration tests for `POST /api/reports/weekly/run` added and passed (supertest)
 
 ## Key Learnings
 1. **Normalization & 1-to-Many Relationships**
