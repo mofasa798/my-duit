@@ -61,9 +61,10 @@ app.use('/api/reports', reportsRouter);
 // Prometheus metrics endpoint
 app.get('/metrics', metrics.metricsMiddleware);
 
-// Schedule weekly job (runs in-process)
+// Schedule jobs (runs in-process)
 if (process.env.NODE_ENV !== 'test') {
   weeklyJob.scheduleWeekly();
+  monthlyJob.scheduleMonthly();
 }
 
 // Serve main HTML file

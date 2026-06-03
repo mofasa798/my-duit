@@ -60,7 +60,7 @@ const runMonthlyReport = async (periodStartArg, periodEndArg) => {
       attempt += 1;
       logger.info({ attempt, periodStart, periodEnd }, 'Running monthly report');
 
-      const report = await reportService.computeWeeklyReport(periodStart, periodEnd);
+      const report = await reportService.computeMonthlyReport(periodStart, periodEnd);
       await reportService.saveReport('monthly', periodStart, periodEnd, report.totalIncome, report.totalExpense, report.netSavings);
 
       const durationMs = Date.now() - startTime;

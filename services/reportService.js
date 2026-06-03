@@ -47,7 +47,10 @@ const saveReport = async (reportType, periodStart, periodEnd, totalIncome, total
   return res;
 };
 
+const computeMonthlyReport = computeWeeklyReport;
+
 module.exports = {
   computeWeeklyReport,
+  computeMonthlyReport,
   saveReport,
 };

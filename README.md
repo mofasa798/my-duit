@@ -125,9 +125,12 @@ Script ini akan:
 
 Catatan: Automated API tests telah dijalankan dan lulus selama pengembangan.
 
-## Weekly Reports (Phase 6)
+## Weekly & Monthly Reports (Phase 6)
 
-Server menyediakan job mingguan yang akan menghasilkan laporan setiap hari Minggu.
+Server menyediakan job mingguan dan bulanan yang akan menghasilkan laporan mingguan (setiap Minggu) dan laporan bulanan (setiap tanggal 1).
+
+
+
 
 Untuk men-trigger laporan secara manual (testing), jalankan:
 
@@ -143,6 +146,9 @@ Endpoint untuk laporan:
 Penjadwalan:
 
 - Cron expression: `5 0 * * 0` (Setiap Minggu pukul 00:05) menggunakan `node-cron`.
+
+Untuk laporan bulanan, penjadwalan menggunakan cron:
+- Cron expression: `10 0 1 * *` (Setiap tanggal 1 pukul 00:10)
 
 Catatan: Job telah diuji dengan `npm run run:weekly` dan hasil laporan disimpan di tabel `reports`.
 
