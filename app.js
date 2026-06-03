@@ -16,6 +16,7 @@ const transactionsRouter = require('./routes/transactions');
 const dashboardRouter = require('./routes/dashboard');
 const reportsRouter = require('./routes/reports');
 const weeklyJob = require('./jobs/weeklyReport');
+const metrics = require('./utils/metrics');
 
 const app = express();
 
@@ -43,6 +44,9 @@ app.use('/api/categories', categoriesRouter);
 app.use('/api/transactions', transactionsRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/reports', reportsRouter);
+
+// Prometheus metrics endpoint
+app.get('/metrics', metrics.metricsMiddleware);
 
 // Schedule weekly job (runs in-process)
 weeklyJob.scheduleWeekly();

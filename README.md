@@ -184,6 +184,25 @@ Metrics (stub)
 	 - `reports.weekly.skipped` : emitted when a report already exists for the period (labels: `periodStart`, `periodEnd`)
  - Integration: replace `utils/metrics.js` with real exporter (Prometheus, Datadog, etc.) or forward logs to a log-based metric pipeline.
 
+	Prometheus + Grafana (local)
+
+	1. Start services:
+
+	```bash
+	docker-compose up -d
+	```
+
+	2. Ensure your app is running on port `3000` (default). Prometheus scrapes `http://host.docker.internal:3000/metrics` by default.
+
+	3. Open Prometheus: http://localhost:9090 and Grafana: http://localhost:3001 (user: `admin`, password: `admin`).
+
+	4. In Grafana, add a Prometheus data source pointing to `http://prometheus:9090` (when using Docker compose) or `http://localhost:9090` when accessing locally.
+
+	Notes:
+
+	- If Docker cannot resolve `host.docker.internal`, adjust `monitoring/prometheus.yml` to point directly at your host or container address.
+	- You can import dashboards in Grafana to visualize `reports_weekly_generated_total`, `reports_weekly_failed_total`, and `reports_weekly_skipped_total`.
+
 Contoh `curl`
 
 - Memanggil daftar laporan:
