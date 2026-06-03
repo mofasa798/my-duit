@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const reportService = require('../services/reportService');
 const db = require('../config/database');
 const logger = require('../utils/logger');
+const metrics = require('../utils/metrics');
 
 const formatDate = (d) => d.toISOString().slice(0, 10);
 
@@ -35,6 +36,7 @@ const runWeeklyReport = async (periodStartArg, periodEndArg) => {
     );
     if (existing && existing.length > 0) {
       logger.info({ periodStart, periodEnd, reportId: existing[0].id }, 'Weekly report already exists; skipping save');
+      metrics.emitMetric('reports.weekly.skipped', 1, { periodStart, periodEnd });
       const report = await reportService.computeWeeklyReport(periodStart, periodEnd);
       return report;
     }
@@ -54,11 +56,13 @@ const runWeeklyReport = async (periodStartArg, periodEndArg) => {
 
       const duration = Date.now() - startTime;
       logger.info({ periodStart, periodEnd, duration, attempt }, 'Weekly report generated successfully');
+      metrics.emitMetric('reports.weekly.generated', 1, { periodStart, periodEnd, duration });
       return report;
     } catch (err) {
       logger.error({ err, attempt, periodStart, periodEnd }, 'Weekly report attempt failed');
       if (attempt > maxRetries) {
         logger.error({ periodStart, periodEnd, attempts: attempt }, 'Weekly report failed after max retries');
+        metrics.emitMetric('reports.weekly.failed', 1, { periodStart, periodEnd, attempts: attempt });
         throw err;
       }
       const backoff = baseMs * Math.pow(2, attempt - 1);

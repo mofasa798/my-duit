@@ -175,6 +175,15 @@ Status pengembangan:
 
 - `2026-06-03`: Weekly job hardened: structured logging (`pino`), idempotency checks, and retry/backoff (env: `REPORT_RETRY_MAX`, `REPORT_RETRY_BASE_MS`).
 
+Metrics (stub)
+
+ - The weekly job now emits simple metrics as structured log events. These are currently logged via the `utils/metrics.js` stub.
+ - Emitted metric names:
+	 - `reports.weekly.generated` : emitted on successful generation (labels: `periodStart`, `periodEnd`, `duration`)
+	 - `reports.weekly.failed` : emitted when the job fails after retries (labels: `periodStart`, `periodEnd`, `attempts`)
+	 - `reports.weekly.skipped` : emitted when a report already exists for the period (labels: `periodStart`, `periodEnd`)
+ - Integration: replace `utils/metrics.js` with real exporter (Prometheus, Datadog, etc.) or forward logs to a log-based metric pipeline.
+
 Contoh `curl`
 
 - Memanggil daftar laporan:
