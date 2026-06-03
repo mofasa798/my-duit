@@ -1,0 +1,29 @@
+groups:
+  - name: weekly-report-rules
+    rules:
+      - alert: WeeklyReportsFailed
+        expr: increase(reports_weekly_failed_total[1h]) > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Weekly report failures detected"
+          description: "There were {{ $value }} failed weekly reports in the last hour."
+
+      - alert: WeeklyReportsNotGenerated
+        expr: increase(reports_weekly_generated_total[7d]) == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No weekly report generated in 7 days"
+          description: "No weekly reports have been generated in the last 7 days. Check the reporting job."
+
+      - alert: HighWeeklyReportFailureRate
+        expr: (increase(reports_weekly_failed_total[1h]) > 0) and (increase(reports_weekly_failed_total[1h]) / max(1, increase(reports_weekly_generated_total[1h])) > 0.2)
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High failure rate for weekly reports"
+          description: "Failure rate for weekly reports over the last hour is >20%."

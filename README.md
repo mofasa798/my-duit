@@ -208,6 +208,25 @@ Metrics (stub)
 	- The repository includes a sample Grafana dashboard and provisioning config under `monitoring/grafana`.
 	- When using `docker-compose up -d`, Grafana will auto-provision Prometheus datasource and the dashboard `Weekly Reports Overview`.
 
+	Alerting (Prometheus + Alertmanager)
+
+	- A set of alerting rules is included at `monitoring/alerting/alert.rules.yml` (failures, missing reports, high failure rate).
+	- Alertmanager is included in `docker-compose.yml` with config at `monitoring/alertmanager/alertmanager.yml`.
+	- You must configure real receivers (email, Slack, webhook) in `monitoring/alertmanager/alertmanager.yml` before expecting notifications.
+
+	Example: to run the monitoring stack including Alertmanager:
+
+	```bash
+	docker-compose up -d
+	```
+
+	Prometheus will send alerts to Alertmanager at `http://localhost:9093`.
+
+	Testing alerts:
+
+	- Use Prometheus UI (`/alerts`) to view firing alerts.
+	- For manual trigger during testing you can increase the failed counter via a temporary script or use Prometheus `amtool`.
+
 Contoh `curl`
 
 - Memanggil daftar laporan:

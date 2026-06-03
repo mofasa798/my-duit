@@ -1,0 +1,20 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'default'
+
+receivers:
+  - name: 'default'
+    # By default, no external receiver configured. Edit this file to add 'email_configs',
+    # 'slack_configs' or 'webhook_configs' with your notification endpoints.
+    # Example webhook (uncomment and set url):
+    # webhook_configs:
+    #   - url: 'http://your-webhook-receiver:5000/'
+
+# Example email receiver (configure SMTP and uncomment):
+#  - name: 'team-email'
+#    email_configs:
+#      - to: 'team@example.com'
+#        from: 'alertmanager@example.com'
+#        smarthost: 'smtp.example.com:587'

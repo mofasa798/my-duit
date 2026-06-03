@@ -4,8 +4,19 @@ services:
     image: prom/prometheus:latest
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alerting/alert.rules.yml:/etc/prometheus/rules/alert.rules.yml:ro
     ports:
       - "9090:9090"
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    volumes:
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    ports:
+      - "9093:9093"
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
     restart: unless-stopped
 
   grafana:
