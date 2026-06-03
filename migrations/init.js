@@ -32,22 +32,14 @@ db.run('PRAGMA foreign_keys = ON');
 
 const createTables = () => {
   return new Promise((resolve, reject) => {
-    
-    // Table 1: Categories
-    db.run(`
+    const sql = `
       CREATE TABLE IF NOT EXISTS categories (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL UNIQUE,
         type TEXT NOT NULL CHECK(type IN ('income', 'expense')),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `, (err) => {
-      if (err) return reject(err);
-      console.log('✓ Created table: categories');
-    });
+      );
 
-    // Table 2: Transactions
-    db.run(`
       CREATE TABLE IF NOT EXISTS transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         category_id INTEGER NOT NULL,
@@ -56,16 +48,9 @@ const createTables = () => {
         transaction_date DATE NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (category_id) REFERENCES categories(id) 
-          ON DELETE RESTRICT
-      )
-    `, (err) => {
-      if (err) return reject(err);
-      console.log('✓ Created table: transactions');
-    });
+        FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT
+      );
 
-    // Table 3: Reports
-    db.run(`
       CREATE TABLE IF NOT EXISTS reports (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         report_type TEXT NOT NULL CHECK(report_type IN ('weekly', 'monthly')),
@@ -75,10 +60,29 @@ const createTables = () => {
         total_expense DECIMAL(10, 2),
         net_savings DECIMAL(10, 2),
         generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `, (err) => {
+      );
+
+      CREATE TABLE IF NOT EXISTS report_audit (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        report_id INTEGER,
+        action TEXT NOT NULL,
+        period_start DATE,
+        period_end DATE,
+        details TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE SET NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS locks (
+        name TEXT PRIMARY KEY,
+        owner TEXT,
+        expires_at TIMESTAMP
+      );
+    `;
+
+    db.exec(sql, (err) => {
       if (err) return reject(err);
-      console.log('✓ Created table: reports');
+      console.log('✓ Created tables (categories, transactions, reports, report_audit, locks)');
       resolve();
     });
   });

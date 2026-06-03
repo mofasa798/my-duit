@@ -3,6 +3,8 @@ const reportService = require('../services/reportService');
 const db = require('../config/database');
 const logger = require('../utils/logger');
 const metrics = require('../utils/metrics');
+const audit = require('../services/auditService');
+const os = require('os');
 
 const formatDate = (d) => d.toISOString().slice(0, 10);
 
@@ -36,7 +38,8 @@ const runWeeklyReport = async (periodStartArg, periodEndArg) => {
     );
     if (existing && existing.length > 0) {
       logger.info({ periodStart, periodEnd, reportId: existing[0].id }, 'Weekly report already exists; skipping save');
-      metrics.emitMetric('reports.weekly.skipped', 1, { periodStart, periodEnd });
+      metrics.emitSkipped('weekly', { periodStart, periodEnd });
+      await audit.recordEvent({ reportId: existing[0].id, action: 'skipped', periodStart, periodEnd, details: { reason: 'already_exists' } });
       const report = await reportService.computeWeeklyReport(periodStart, periodEnd);
       return report;
     }
@@ -48,21 +51,28 @@ const runWeeklyReport = async (periodStartArg, periodEndArg) => {
   let attempt = 0;
   while (attempt <= maxRetries) {
     try {
+      // record start attempt
+      await audit.recordEvent({ action: 'started', periodStart, periodEnd, details: { attempt: attempt + 1 } });
       attempt += 1;
       logger.info({ attempt, periodStart, periodEnd }, 'Running weekly report');
 
       const report = await reportService.computeWeeklyReport(periodStart, periodEnd);
       await reportService.saveReport('weekly', periodStart, periodEnd, report.totalIncome, report.totalExpense, report.netSavings);
 
-      const duration = Date.now() - startTime;
-      logger.info({ periodStart, periodEnd, duration, attempt }, 'Weekly report generated successfully');
-      metrics.emitMetric('reports.weekly.generated', 1, { periodStart, periodEnd, duration });
+      const durationMs = Date.now() - startTime;
+      const durationSec = durationMs / 1000;
+      logger.info({ periodStart, periodEnd, durationMs, durationSec, attempt }, 'Weekly report generated successfully');
+      metrics.emitGenerated('weekly', { periodStart, periodEnd });
+      metrics.observeDuration('weekly', { periodStart, periodEnd }, durationSec);
+      metrics.recordLastReportTimestamp('weekly', new Date());
+      await audit.recordEvent({ reportId: null, action: 'generated', periodStart, periodEnd, details: { durationMs, attempt } });
       return report;
     } catch (err) {
       logger.error({ err, attempt, periodStart, periodEnd }, 'Weekly report attempt failed');
       if (attempt > maxRetries) {
         logger.error({ periodStart, periodEnd, attempts: attempt }, 'Weekly report failed after max retries');
-        metrics.emitMetric('reports.weekly.failed', 1, { periodStart, periodEnd, attempts: attempt });
+        metrics.emitFailed('weekly', { periodStart, periodEnd }, attempt);
+        await audit.recordEvent({ action: 'failed', periodStart, periodEnd, details: { attempts: attempt, error: err.message } });
         throw err;
       }
       const backoff = baseMs * Math.pow(2, attempt - 1);
@@ -75,10 +85,28 @@ const runWeeklyReport = async (periodStartArg, periodEndArg) => {
 const scheduleWeekly = () => {
   // Every Sunday at 00:05
   cron.schedule('5 0 * * 0', async () => {
+    const lockService = require('../services/lockService');
+    const lockName = 'weekly_report_scheduler';
+    const owner = `${os.hostname()}_${process.pid}`;
+    const ttlMs = parseInt(process.env.SCHEDULER_LOCK_TTL_MS || '600000', 10); // default 10 minutes
+
     try {
+      const acquired = await lockService.acquireLock(lockName, owner, ttlMs);
+      if (!acquired) {
+        logger.info({ owner }, 'Scheduler lock not acquired; skipping scheduled run');
+        metrics.emitLockFailed('weekly');
+        return;
+      }
+
+      logger.info({ owner }, 'Scheduler lock acquired; executing scheduled job');
+      metrics.emitLockAcquired('weekly');
       await runWeeklyReport();
+
+      // Release lock
+      await lockService.releaseLock(lockName, owner);
     } catch (err) {
-      logger.error({ err }, 'Weekly report job failed');
+      logger.error({ err }, 'Scheduled weekly report job failed');
+      metrics.emitLockFailed('weekly');
     }
   });
 };

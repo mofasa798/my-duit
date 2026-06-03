@@ -16,6 +16,7 @@ const transactionsRouter = require('./routes/transactions');
 const dashboardRouter = require('./routes/dashboard');
 const reportsRouter = require('./routes/reports');
 const weeklyJob = require('./jobs/weeklyReport');
+const monthlyJob = require('./jobs/monthlyReport');
 const metrics = require('./utils/metrics');
 
 const app = express();
@@ -39,6 +40,18 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Job health endpoint - reports last run info
+app.get('/api/health/job', async (req, res, next) => {
+  try {
+    const db = require('./config/database');
+    const lastAudit = await db.getAsync(`SELECT action, details, created_at FROM report_audit ORDER BY created_at DESC LIMIT 1`);
+    const lastReport = await db.getAsync(`SELECT id, report_type, period_start, period_end, generated_at FROM reports ORDER BY generated_at DESC LIMIT 1`);
+    res.json({ success: true, lastAudit, lastReport });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // API route mounting
 app.use('/api/categories', categoriesRouter);
 app.use('/api/transactions', transactionsRouter);
@@ -49,7 +62,9 @@ app.use('/api/reports', reportsRouter);
 app.get('/metrics', metrics.metricsMiddleware);
 
 // Schedule weekly job (runs in-process)
-weeklyJob.scheduleWeekly();
+if (process.env.NODE_ENV !== 'test') {
+  weeklyJob.scheduleWeekly();
+}
 
 // Serve main HTML file
 app.get('/', (req, res) => {

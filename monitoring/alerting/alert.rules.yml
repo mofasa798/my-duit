@@ -27,3 +27,39 @@ groups:
         annotations:
           summary: "High failure rate for weekly reports"
           description: "Failure rate for weekly reports over the last hour is >20%."
+
+      - alert: SchedulerLockAcquisitionFailed
+        expr: increase(scheduler_lock_failed_total[1h]) > 2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Scheduler lock acquisition failures detected"
+          description: "Scheduler lock failed to acquire {{ $value }} times in the last hour. Check for multi-instance issues or DB connectivity."
+
+      - alert: JobHealthStaleReport
+        expr: (time() - report_last_generated_timestamp_seconds) > 864000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "No report generated in 10+ days"
+          description: "Last report was generated {{ $value | humanizeDuration }} ago. Check job and scheduler status."
+
+      - alert: HighAuditFailureEvents
+        expr: increase(report_audit_events_total{action="failed"}[1h]) > increase(report_audit_events_total{action="generated"}[1h])
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "More failed audit events than successful in the last hour"
+          description: "Failed report events ({{ $value }}) exceed generated events. Check application logs."
+
+      - alert: NoReportsGeneratedInSchedule
+        expr: increase(reports_weekly_generated_total[7d]) + increase(reports_weekly_skipped_total[7d]) == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No weekly reports in 7 days (no generation, no skips)"
+          description: "Neither generated nor skipped reports detected in 7 days. Scheduler may not be running."

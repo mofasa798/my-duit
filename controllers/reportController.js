@@ -1,5 +1,6 @@
 const reportService = require('../services/reportService');
 const weeklyJob = require('../jobs/weeklyReport');
+const monthlyJob = require('../jobs/monthlyReport');
 
 const listReports = async (req, res, next) => {
   try {
@@ -20,4 +21,14 @@ const runWeekly = async (req, res, next) => {
   }
 };
 
-module.exports = { listReports, runWeekly };
+const runMonthly = async (req, res, next) => {
+  try {
+    const { periodStart, periodEnd } = req.body || {};
+    const report = await monthlyJob.runMonthlyReport(periodStart, periodEnd);
+    res.json({ success: true, data: report });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { listReports, runWeekly, runMonthly };
