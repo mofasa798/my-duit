@@ -10,14 +10,14 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - Automation dengan node-cron
 
 ## Current Stack
-- Frontend: HTML, TailwindCSS, Vanilla JavaScript
+- Frontend: HTML, TailwindCSS (v4 CLI), Vanilla JavaScript
 - Backend: Node.js, Express.js
 - Database: SQLite
 - Automation: node-cron
 - Version Control: Git
 
 ## Current Phase
-**Phase 3–6: DONE. Phase 7: Export features — In Progress**
+**Phase 3–7: DONE. Phase 8: Refactoring & optimization — In Progress**
 
 
 ## Current Project Status
@@ -91,6 +91,9 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
  - `2026-06-03`: Monthly reporting scheduler + compute wiring hardened (idempotent + consistent compute service)
  - `2026-06-03`: Phase 6 completed - Created Frontend UI for reports (reports.html & reports.js)
  - `2026-06-03`: Added custom date range inputs in the Report UI to pass periodStart/periodEnd to the backend API
+ - `2026-06-03`: Phase 7 completed - Implemented CSV export for transactions and reports
+ - `2026-06-03`: Added Print Preview feature with a dedicated layout (`print.html`) for transactions and reports
+ - `2026-06-03`: Phase 8 in progress - Replaced Tailwind Play CDN with pure TailwindCSS v4 CLI for production optimization.
 
 
 ## Key Learnings
@@ -130,7 +133,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 4. → Phase 4: Test API endpoints
 5. → Phase 5: Build Frontend UI
 6. ✅ Phase 6: Weekly & Monthly reports + Frontend UI (DONE)
-7. → Phase 7: Export features
+7. ✅ Phase 7: Export features + Print Preview (DONE)
 
 8. → Phase 8: Refactoring & optimization
 9. → Phase 9: Testing & debugging

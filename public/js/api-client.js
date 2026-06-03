@@ -116,8 +116,12 @@ class ApiClient {
 
   // ==================== EXPORT ====================
 
-  async exportToCSV() {
-    return this.request('/export/csv');
+  exportTransactionsCSV() {
+    window.open(`${this.baseURL}/export/transactions/csv`, '_self');
+  }
+
+  exportReportsCSV() {
+    window.open(`${this.baseURL}/export/reports/csv`, '_self');
   }
 }
 

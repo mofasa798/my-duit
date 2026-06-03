@@ -15,6 +15,7 @@ const categoriesRouter = require('./routes/categories');
 const transactionsRouter = require('./routes/transactions');
 const dashboardRouter = require('./routes/dashboard');
 const reportsRouter = require('./routes/reports');
+const exportRouter = require('./routes/export');
 const weeklyJob = require('./jobs/weeklyReport');
 const monthlyJob = require('./jobs/monthlyReport');
 const metrics = require('./utils/metrics');
@@ -57,6 +58,7 @@ app.use('/api/categories', categoriesRouter);
 app.use('/api/transactions', transactionsRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/reports', reportsRouter);
+app.use('/api/export', exportRouter);
 
 // Prometheus metrics endpoint
 app.get('/metrics', metrics.metricsMiddleware);

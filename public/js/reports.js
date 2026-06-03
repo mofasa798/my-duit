@@ -94,6 +94,20 @@ document.addEventListener('DOMContentLoaded', () => {
     handleRunReport(btnRunMonthly, () => apiClient.runMonthlyReport(data), 'Run Monthly Report');
   });
 
+  const btnExport = document.getElementById('btn-export-csv');
+  if (btnExport) {
+    btnExport.addEventListener('click', () => {
+      apiClient.exportReportsCSV();
+    });
+  }
+
+  const btnPrint = document.getElementById('btn-print-preview');
+  if (btnPrint) {
+    btnPrint.addEventListener('click', () => {
+      window.open('/html/print.html?type=reports', '_blank');
+    });
+  }
+
   // Initial load
   loadReports();
 });

@@ -18,6 +18,9 @@ My Duit adalah aplikasi yang membantu pengguna mencatat transaksi keuangan, meli
 - Database schema untuk categories, transactions, dan reports
  - Frontend CRUD UI untuk `categories` dan `transactions` (pages: `/html/categories.html`, `/html/transactions.html`)
  - Frontend UI untuk Laporan Mingguan & Bulanan (page: `/html/reports.html`) dengan dukungan periode kustom
+ - Fitur Export ke CSV secara native untuk transaksi dan laporan
+ - Fitur Print Preview dengan layout khusus yang dioptimalkan untuk cetak (`/html/print.html`)
+ - Optimized Frontend Build dengan kompilasi murni TailwindCSS v4 CLI
 
 ## Struktur Proyek
 
@@ -28,32 +31,40 @@ my-duit/
 ├── controllers/
 │   ├── categoryController.js
 │   ├── dashboardController.js
-│   └── transactionController.js
+│   ├── transactionController.js
+│   └── exportController.js
 ├── jobs/
 ├── migrations/
 │   └── init.js
 ├── middleware/
+├── src/
+│   └── css/
+│       └── main.css
 ├── public/
 │   ├── html/
 │   │   ├── index.html
 │   │   ├── categories.html
 │   │   ├── transactions.html
-│   │   └── reports.html
+│   │   ├── reports.html
+│   │   └── print.html
 │   ├── js/
 │   │   ├── api-client.js
 │   │   ├── categories.js
 │   │   ├── dashboard.js
 │   │   ├── transactions.js
-│   │   └── reports.js
+│   │   ├── reports.js
+│   │   └── print.js
 │   └── css/
 ├── routes/
 │   ├── categories.js
 │   ├── dashboard.js
-│   └── transactions.js
+│   ├── transactions.js
+│   └── export.js
 ├── services/
 │   ├── categoryService.js
 │   ├── dashboardService.js
-│   └── transactionService.js
+│   ├── transactionService.js
+│   └── exportService.js
 ├── app.js
 ├── server.js
 ├── package.json
@@ -72,21 +83,27 @@ my-duit/
 npm install
 ```
 
-4. Salin file `.env.example` menjadi `.env` jika diperlukan.
+4. Lakukan build CSS awal untuk memastikan styles.css ter-generate:
 
-5. Inisialisasi database:
+```bash
+npm run build:css
+```
+
+5. Salin file `.env.example` menjadi `.env` jika diperlukan.
+
+6. Inisialisasi database:
 
 ```bash
 npm run init:db
 ```
 
-6. Jalankan server:
+7. Jalankan server untuk development (mengaktifkan live-reload CSS dan API):
 
 ```bash
-npm start
+npm run dev
 ```
 
-7. Buka browser dan akses:
+8. Buka browser dan akses:
 
 ```
 http://localhost:3000
@@ -111,6 +128,8 @@ http://localhost:3000/html/transactions.html
 - `PUT /api/transactions/:id`
 - `DELETE /api/transactions/:id`
 - `GET /api/dashboard`
+- `GET /api/export/transactions/csv`
+- `GET /api/export/reports/csv`
 
 ## Testing
 
@@ -267,7 +286,7 @@ Catatan: `jq` berguna untuk memformat output JSON di terminal, tapi opsional.
 ## Catatan
 
 - Frontend saat ini hanya template dasar.
-- Export CSV/Excel akan dibangun di fase berikutnya.
+- Ekspor format Excel/PDF tingkat lanjut dapat ditambahkan di fase masa depan; untuk saat ini ekspor CSV native sudah didukung.
 
 ## Kontribusi
 

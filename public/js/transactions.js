@@ -86,6 +86,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  const btnExport = document.getElementById('btn-export-csv');
+  if (btnExport) {
+    btnExport.addEventListener('click', () => {
+      apiClient.exportTransactionsCSV();
+    });
+  }
+
+  const btnPrint = document.getElementById('btn-print-preview');
+  if (btnPrint) {
+    btnPrint.addEventListener('click', () => {
+      window.open('/html/print.html?type=transactions', '_blank');
+    });
+  }
+
   await loadCategories();
   await loadTransactions();
 });

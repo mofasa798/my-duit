@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Transactions - My Duit</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="bg-slate-900 text-white min-h-screen">
   <div class="max-w-5xl mx-auto p-6">
@@ -26,7 +26,13 @@
     </section>
 
     <section id="transactions-list" class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-      <h3 class="font-semibold mb-2">Recent Transactions</h3>
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold">Recent Transactions</h3>
+        <div class="space-x-2">
+          <button id="btn-export-csv" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-sm text-slate-300 transition-colors">Export CSV</button>
+          <button id="btn-print-preview" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-sm text-slate-300 transition-colors">Print Preview</button>
+        </div>
+      </div>
       <div id="transactions-container">Loading...</div>
     </section>
   </div>
