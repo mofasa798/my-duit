@@ -203,6 +203,11 @@ Metrics (stub)
 	- If Docker cannot resolve `host.docker.internal`, adjust `monitoring/prometheus.yml` to point directly at your host or container address.
 	- You can import dashboards in Grafana to visualize `reports_weekly_generated_total`, `reports_weekly_failed_total`, and `reports_weekly_skipped_total`.
 
+	Grafana provisioning
+
+	- The repository includes a sample Grafana dashboard and provisioning config under `monitoring/grafana`.
+	- When using `docker-compose up -d`, Grafana will auto-provision Prometheus datasource and the dashboard `Weekly Reports Overview`.
+
 Contoh `curl`
 
 - Memanggil daftar laporan:
