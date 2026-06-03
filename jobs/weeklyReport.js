@@ -1,5 +1,7 @@
 const cron = require('node-cron');
 const reportService = require('../services/reportService');
+const db = require('../config/database');
+const logger = require('../utils/logger');
 
 const formatDate = (d) => d.toISOString().slice(0, 10);
 
@@ -15,12 +17,55 @@ const computePeriodForLastWeek = () => {
   return { periodStart: formatDate(sunday), periodEnd: formatDate(saturday) };
 };
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 const runWeeklyReport = async (periodStartArg, periodEndArg) => {
   const { periodStart, periodEnd } = periodStartArg && periodEndArg ? { periodStart: periodStartArg, periodEnd: periodEndArg } : computePeriodForLastWeek();
-  const report = await reportService.computeWeeklyReport(periodStart, periodEnd);
-  await reportService.saveReport('weekly', periodStart, periodEnd, report.totalIncome, report.totalExpense, report.netSavings);
-  console.log('Weekly report generated for', periodStart, 'to', periodEnd);
-  return report;
+
+  const maxRetries = parseInt(process.env.REPORT_RETRY_MAX || '3', 10);
+  const baseMs = parseInt(process.env.REPORT_RETRY_BASE_MS || '500', 10);
+
+  const startTime = Date.now();
+
+  // Idempotency: check if report already exists for this period
+  try {
+    const existing = await db.allAsync(
+      `SELECT id FROM reports WHERE report_type = ? AND period_start = ? AND period_end = ? LIMIT 1`,
+      ['weekly', periodStart, periodEnd]
+    );
+    if (existing && existing.length > 0) {
+      logger.info({ periodStart, periodEnd, reportId: existing[0].id }, 'Weekly report already exists; skipping save');
+      const report = await reportService.computeWeeklyReport(periodStart, periodEnd);
+      return report;
+    }
+  } catch (err) {
+    logger.error({ err, periodStart, periodEnd }, 'Failed to check existing reports');
+    // continue to attempt report generation
+  }
+
+  let attempt = 0;
+  while (attempt <= maxRetries) {
+    try {
+      attempt += 1;
+      logger.info({ attempt, periodStart, periodEnd }, 'Running weekly report');
+
+      const report = await reportService.computeWeeklyReport(periodStart, periodEnd);
+      await reportService.saveReport('weekly', periodStart, periodEnd, report.totalIncome, report.totalExpense, report.netSavings);
+
+      const duration = Date.now() - startTime;
+      logger.info({ periodStart, periodEnd, duration, attempt }, 'Weekly report generated successfully');
+      return report;
+    } catch (err) {
+      logger.error({ err, attempt, periodStart, periodEnd }, 'Weekly report attempt failed');
+      if (attempt > maxRetries) {
+        logger.error({ periodStart, periodEnd, attempts: attempt }, 'Weekly report failed after max retries');
+        throw err;
+      }
+      const backoff = baseMs * Math.pow(2, attempt - 1);
+      logger.info({ backoff, attempt }, 'Retrying after backoff');
+      await sleep(backoff);
+    }
+  }
 };
 
 const scheduleWeekly = () => {
@@ -29,7 +74,7 @@ const scheduleWeekly = () => {
     try {
       await runWeeklyReport();
     } catch (err) {
-      console.error('Weekly report job failed:', err);
+      logger.error({ err }, 'Weekly report job failed');
     }
   });
 };

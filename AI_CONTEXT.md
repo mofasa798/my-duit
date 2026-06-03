@@ -17,7 +17,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - Version Control: Git
 
 ## Current Phase
-**Phase 6: Weekly Reporting** - ✅ COMPLETE
+**Phase 3–5: DONE. Phase 6: Weekly Reporting — In Progress**
 
 ## Current Project Status
 - ✅ Workspace created
@@ -82,6 +82,11 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
  - `2026-06-02`: Integration tests for `POST /api/reports/weekly/run` added and passed (supertest)
  - `2026-06-02`: `curl` examples added to README for report endpoints
  - `2026-06-02`: GitHub Actions CI workflow `.github/workflows/ci.yml` added to run `npm test` on push/PR
+ - `2026-06-03`: Phase 3 marked DONE
+ - `2026-06-03`: Phase 4 marked DONE
+ - `2026-06-03`: Phase 5 marked DONE
+ - `2026-06-03`: Continuing Phase 6 — added next subtasks: harden job, monitoring, audit trail
+ - `2026-06-03`: Hardened weekly job with structured logging, idempotency checks, and retries/backoff
 
 ## Key Learnings
 1. **Normalization & 1-to-Many Relationships**

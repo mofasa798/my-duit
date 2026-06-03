@@ -173,6 +173,8 @@ Status pengembangan:
 - `2026-06-02`: Validation middleware ditambahkan untuk endpoint laporan; unit tests untuk `reportService` dibuat dan lulus.
  - `2026-06-02`: Integration tests untuk `POST /api/reports/weekly/run` ditambahkan (supertest) dan lulus.
 
+- `2026-06-03`: Weekly job hardened: structured logging (`pino`), idempotency checks, and retry/backoff (env: `REPORT_RETRY_MAX`, `REPORT_RETRY_BASE_MS`).
+
 Contoh `curl`
 
 - Memanggil daftar laporan:
