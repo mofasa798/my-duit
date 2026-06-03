@@ -17,6 +17,7 @@ My Duit adalah aplikasi yang membantu pengguna mencatat transaksi keuangan, meli
 - Struktur aplikasi modular dengan routes, controllers, services, dan database helper
 - Database schema untuk categories, transactions, dan reports
  - Frontend CRUD UI untuk `categories` dan `transactions` (pages: `/html/categories.html`, `/html/transactions.html`)
+ - Frontend UI untuk Laporan Mingguan & Bulanan (page: `/html/reports.html`) dengan dukungan periode kustom
 
 ## Struktur Proyek
 
@@ -34,10 +35,16 @@ my-duit/
 ├── middleware/
 ├── public/
 │   ├── html/
-│   │   └── index.html
+│   │   ├── index.html
+│   │   ├── categories.html
+│   │   ├── transactions.html
+│   │   └── reports.html
 │   ├── js/
 │   │   ├── api-client.js
-│   │   └── dashboard.js
+│   │   ├── categories.js
+│   │   ├── dashboard.js
+│   │   ├── transactions.js
+│   │   └── reports.js
 │   └── css/
 ├── routes/
 │   ├── categories.js
@@ -260,7 +267,6 @@ Catatan: `jq` berguna untuk memformat output JSON di terminal, tapi opsional.
 ## Catatan
 
 - Frontend saat ini hanya template dasar.
-- Report mingguan dan bulanan akan dikembangkan selanjutnya.
 - Export CSV/Excel akan dibangun di fase berikutnya.
 
 ## Kontribusi

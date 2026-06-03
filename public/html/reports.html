@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports - My Duit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+  <div class="max-w-4xl mx-auto p-6">
+    <header class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-3xl font-bold">Reports</h2>
+          <p class="text-slate-400 mt-2">View and generate weekly/monthly reports</p>
+        </div>
+        <a href="/html/index.html" class="text-blue-400 hover:text-blue-300 flex items-center gap-1">
+          <span>&larr;</span> Back to Dashboard
+        </a>
+      </div>
+    </header>
+
+    <section class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 shadow-lg flex flex-col justify-between">
+        <div>
+          <h3 class="text-xl font-semibold mb-2">Weekly Report</h3>
+          <p class="text-sm text-slate-400 mb-4">Calculate and save income and expenses for a specific week.</p>
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Start Date</label>
+              <input type="date" id="weekly-start" class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-sm focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">End Date</label>
+              <input type="date" id="weekly-end" class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-sm focus:outline-none focus:border-blue-500" />
+            </div>
+          </div>
+        </div>
+        <button id="btn-run-weekly" class="w-full px-4 py-3 bg-blue-600 hover:bg-blue-500 rounded-md text-white font-medium transition-colors shadow-sm">
+          Run Weekly Report
+        </button>
+      </div>
+      
+      <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 shadow-lg flex flex-col justify-between">
+        <div>
+          <h3 class="text-xl font-semibold mb-2">Monthly Report</h3>
+          <p class="text-sm text-slate-400 mb-4">Calculate and save income and expenses for a specific month.</p>
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Start Date</label>
+              <input type="date" id="monthly-start" class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-sm focus:outline-none focus:border-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">End Date</label>
+              <input type="date" id="monthly-end" class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-sm focus:outline-none focus:border-emerald-500" />
+            </div>
+          </div>
+        </div>
+        <button id="btn-run-monthly" class="w-full px-4 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-md text-white font-medium transition-colors shadow-sm">
+          Run Monthly Report
+        </button>
+      </div>
+    </section>
+
+    <section id="reports-list-section" class="bg-slate-800 rounded-lg border border-slate-700 shadow-lg overflow-hidden">
+      <div class="p-6 border-b border-slate-700">
+        <h3 class="text-lg font-semibold">Report History</h3>
+      </div>
+      <div id="reports-container" class="overflow-x-auto p-0">
+        <div class="p-6 text-center text-slate-400">Loading reports...</div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/js/api-client.js"></script>
+  <script src="/js/reports.js"></script>
+</body>
+</html>

@@ -89,6 +89,8 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
  - `2026-06-03`: Continuing Phase 6 — added next subtasks: harden job, monitoring, audit trail
  - `2026-06-03`: Hardened weekly job with structured logging, idempotency checks, and retries/backoff
  - `2026-06-03`: Monthly reporting scheduler + compute wiring hardened (idempotent + consistent compute service)
+ - `2026-06-03`: Phase 6 completed - Created Frontend UI for reports (reports.html & reports.js)
+ - `2026-06-03`: Added custom date range inputs in the Report UI to pass periodStart/periodEnd to the backend API
 
 
 ## Key Learnings
@@ -127,7 +129,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
    - [ ] Error handling middleware
 4. → Phase 4: Test API endpoints
 5. → Phase 5: Build Frontend UI
-6. ✅ Phase 6: Weekly & Monthly reports (DONE)
+6. ✅ Phase 6: Weekly & Monthly reports + Frontend UI (DONE)
 7. → Phase 7: Export features
 
 8. → Phase 8: Refactoring & optimization

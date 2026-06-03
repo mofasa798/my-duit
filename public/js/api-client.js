@@ -102,12 +102,16 @@ class ApiClient {
 
   // ==================== REPORTS ====================
 
-  async getWeeklyReport() {
-    return this.request('/reports/weekly');
+  async getReports() {
+    return this.request('/reports');
   }
 
-  async getMonthlyReport() {
-    return this.request('/reports/monthly');
+  async runWeeklyReport(data = null) {
+    return this.request('/reports/weekly/run', 'POST', data);
+  }
+
+  async runMonthlyReport(data = null) {
+    return this.request('/reports/monthly/run', 'POST', data);
   }
 
   // ==================== EXPORT ====================
