@@ -17,7 +17,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - Version Control: Git
 
 ## Current Phase
-**Phase 3–7: DONE. Phase 8: Refactoring & optimization — DONE**
+**Phase 3–8: DONE. Next: Phase 9 (Testing & debugging) → Phase 10 (Portfolio)**
 
 
 ## Current Project Status
@@ -43,6 +43,9 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
  - ✅ Integration tests for `POST /api/reports/weekly/run` added and passed (Supertest + Jest)
  - ✅ README updated with `curl` examples for report endpoints
  - ✅ GitHub Actions CI workflow added to run tests on push/PR
+ - ✅ Responsive hamburger menu parity across all 4 pages (index, transactions, categories, reports)
+   - nav.js: toggle, click-outside, resize-to-desktop, icon swap ☰↔✕
+   - A11y: `aria-label`, `aria-expanded`
 
 ## Application Features (To Build)
 1. Dashboard (Total income, expense, balance, weekly/monthly summary)
@@ -102,7 +105,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
    - transactions.js: feedback visual (no alert), form reset lengkap, disable submit saat loading
    - categories.js: inline edit row (hapus prompt()), badge berwarna, XSS escaping
    - Bug fix: dashboard tidak bisa tampil (response.data), Reports Balance NaN (net_savings)
-
+ - `2026-06-04`: Hamburger menu parity — categories.html & reports.html sekarang pakai pattern responsive yang sama dengan index/transactions (desktop nav + mobile hamburger). nav.js sudah handle toggle, click-outside, dan resize. CSS di-rebuild untuk generate utility `md:hidden`, `opacity-*`, `translate-y-*`. Commit: `f4bb845 feat(ui): add hamburger menu to categories & reports pages`.
 
 ## Key Learnings
 1. **Normalization & 1-to-Many Relationships**
@@ -132,19 +135,13 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 ## Next Steps
 1. ✅ Phase 1 DONE: Database & Folder Structure planned
 2. ✅ Phase 2 DONE: Project initialized & database created
-3. → Phase 3: Building REST API (Routes, Controllers, Services)
-   - [ ] Create category controller & routes
-   - [ ] Create transaction controller & routes
-   - [ ] Create dashboard controller & routes
-   - [ ] Create service layer for business logic
-   - [ ] Error handling middleware
-4. → Phase 4: Test API endpoints
-5. → Phase 5: Build Frontend UI
-6. ✅ Phase 6: Weekly & Monthly reports + Frontend UI (DONE)
-7. ✅ Phase 7: Export features + Print Preview (DONE)
-
-8. → Phase 8: Refactoring & optimization
-9. → Phase 9: Testing & debugging
+3. ✅ Phase 3 DONE: REST API (Routes, Controllers, Services)
+4. ✅ Phase 4 DONE: API testing (script + Jest + Supertest + CI)
+5. ✅ Phase 5 DONE: Frontend CRUD UI
+6. ✅ Phase 6 DONE: Weekly & Monthly reports + Frontend UI
+7. ✅ Phase 7 DONE: Export features + Print Preview
+8. ✅ Phase 8 DONE: Refactoring & optimization (incl. hamburger menu parity)
+9. → Phase 9: Testing & debugging (next)
 10. → Phase 10: Portfolio preparation
 
 ## Notes

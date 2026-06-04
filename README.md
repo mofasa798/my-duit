@@ -283,6 +283,22 @@ curl -X POST http://localhost:3000/api/reports/weekly/run \
 
 Catatan: `jq` berguna untuk memformat output JSON di terminal, tapi opsional.
 
+## Responsive UI
+
+Semua halaman (`index`, `transactions`, `categories`, `reports`) sudah responsive dengan pattern yang konsisten:
+- **Desktop (≥768px)**: nav link inline di header.
+- **Mobile (<768px)**: hamburger button (☰) yang membuka dropdown menu; tap di luar atau resize ke desktop akan menutup otomatis.
+- A11y: `aria-label` dan `aria-expanded` di-update saat toggle.
+- Logika toggle ada di `public/js/nav.js`.
+
+## Status & Progress
+
+- Phase 1–8: **DONE**
+- Phase 9 (Testing & debugging): next
+- Phase 10 (Portfolio preparation): planned
+
+Commit terakhir: `f4bb845 feat(ui): add hamburger menu to categories & reports pages`.
+
 ## Catatan
 
 - Frontend saat ini hanya template dasar.
