@@ -11,6 +11,7 @@
 const express = require('express');
 const path = require('path');
 
+const db = require('./config/database');
 const categoriesRouter = require('./routes/categories');
 const transactionsRouter = require('./routes/transactions');
 const dashboardRouter = require('./routes/dashboard');
@@ -44,7 +45,6 @@ app.get('/api/health', (req, res) => {
 // Job health endpoint - reports last run info
 app.get('/api/health/job', async (req, res, next) => {
   try {
-    const db = require('./config/database');
     const lastAudit = await db.getAsync(`SELECT action, details, created_at FROM report_audit ORDER BY created_at DESC LIMIT 1`);
     const lastReport = await db.getAsync(`SELECT id, report_type, period_start, period_end, generated_at FROM reports ORDER BY generated_at DESC LIMIT 1`);
     res.json({ success: true, lastAudit, lastReport });

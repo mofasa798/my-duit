@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
           <td class="p-4 text-right text-emerald-400">${formatCurrency(report.total_income)}</td>
           <td class="p-4 text-right text-rose-400">${formatCurrency(report.total_expense)}</td>
-          <td class="p-4 text-right font-medium ${report.balance >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${formatCurrency(report.balance)}</td>
+          <td class="p-4 text-right font-medium ${(report.net_savings ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${formatCurrency(report.net_savings ?? 0)}</td>
           <td class="p-4 text-slate-400 text-xs">${new Date(report.generated_at).toLocaleString('id-ID')}</td>
         </tr>`;
       });

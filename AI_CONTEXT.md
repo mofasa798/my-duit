@@ -17,7 +17,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - Version Control: Git
 
 ## Current Phase
-**Phase 3–7: DONE. Phase 8: Refactoring & optimization — In Progress**
+**Phase 3–7: DONE. Phase 8: Refactoring & optimization — DONE**
 
 
 ## Current Project Status
@@ -93,7 +93,15 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
  - `2026-06-03`: Added custom date range inputs in the Report UI to pass periodStart/periodEnd to the backend API
  - `2026-06-03`: Phase 7 completed - Implemented CSV export for transactions and reports
  - `2026-06-03`: Added Print Preview feature with a dedicated layout (`print.html`) for transactions and reports
- - `2026-06-03`: Phase 8 in progress - Replaced Tailwind Play CDN with pure TailwindCSS v4 CLI for production optimization.
+ - `2026-06-04`: Phase 8 completed - Refactoring & Optimization
+   - Backend: deduplikasi validation middleware, rename computeReport (generic), clean imports di app.js
+   - Frontend: shared top-navbar di semua halaman (index, transactions, categories, reports)
+   - CSS: Google Font Inter, design tokens, badge helper, skeleton loader, card hover
+   - New: nav.js (auto-highlight active nav link)
+   - dashboard.js: summary cards dengan ikon & warna, auto-hide status bar, badge income/expense
+   - transactions.js: feedback visual (no alert), form reset lengkap, disable submit saat loading
+   - categories.js: inline edit row (hapus prompt()), badge berwarna, XSS escaping
+   - Bug fix: dashboard tidak bisa tampil (response.data), Reports Balance NaN (net_savings)
 
 
 ## Key Learnings
