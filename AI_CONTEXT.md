@@ -17,7 +17,7 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 - Version Control: Git
 
 ## Current Phase
-**Phase 3–8: DONE. Next: Phase 9 (Testing & debugging) → Phase 10 (Portfolio)**
+**Phase 3–9: DONE. Next: Phase 10 (Portfolio)**
 
 
 ## Current Project Status
@@ -106,6 +106,8 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
    - categories.js: inline edit row (hapus prompt()), badge berwarna, XSS escaping
    - Bug fix: dashboard tidak bisa tampil (response.data), Reports Balance NaN (net_savings)
  - `2026-06-04`: Hamburger menu parity — categories.html & reports.html sekarang pakai pattern responsive yang sama dengan index/transactions (desktop nav + mobile hamburger). nav.js sudah handle toggle, click-outside, dan resize. CSS di-rebuild untuk generate utility `md:hidden`, `opacity-*`, `translate-y-*`. Commit: `f4bb845 feat(ui): add hamburger menu to categories & reports pages`.
+ - `2026-06-17`: Created `issue.md` containing detailed test scenarios for Phase 9 (API unit/integration tests) to be executed by a junior developer or a lower-cost AI model.
+ - `2026-06-17`: Phase 9 completed - Implemented all 44 test scenarios from `issue.md` in `feature/unit-tes` branch using Supertest and Jest, with isolated test DB setup.
 
 ## Key Learnings
 1. **Normalization & 1-to-Many Relationships**
@@ -141,8 +143,8 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 6. ✅ Phase 6 DONE: Weekly & Monthly reports + Frontend UI
 7. ✅ Phase 7 DONE: Export features + Print Preview
 8. ✅ Phase 8 DONE: Refactoring & optimization (incl. hamburger menu parity)
-9. → Phase 9: Testing & debugging (next)
-10. → Phase 10: Portfolio preparation
+9. ✅ Phase 9 DONE: Testing & debugging (Integration/API tests for all REST endpoints)
+10. → Phase 10: Portfolio preparation (next)
 
 ## Notes
 - Learning project first, portfolio second
