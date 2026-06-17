@@ -1,6 +1,6 @@
 /**
  * app.js
- * 
+ *
  * Express application setup
  * Handles:
  * - Middleware configuration
@@ -35,18 +35,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV
+    environment: process.env.NODE_ENV,
   });
 });
 
 // Job health endpoint - reports last run info
 app.get('/api/health/job', async (req, res, next) => {
   try {
-    const lastAudit = await db.getAsync(`SELECT action, details, created_at FROM report_audit ORDER BY created_at DESC LIMIT 1`);
-    const lastReport = await db.getAsync(`SELECT id, report_type, period_start, period_end, generated_at FROM reports ORDER BY generated_at DESC LIMIT 1`);
+    const lastAudit = await db.getAsync(
+      `SELECT action, details, created_at FROM report_audit ORDER BY created_at DESC LIMIT 1`
+    );
+    const lastReport = await db.getAsync(
+      `SELECT id, report_type, period_start, period_end, generated_at FROM reports ORDER BY generated_at DESC LIMIT 1`
+    );
     res.json({ success: true, lastAudit, lastReport });
   } catch (err) {
     next(err);
@@ -82,18 +86,18 @@ app.use((req, res) => {
     success: false,
     message: 'Endpoint not found',
     path: req.path,
-    method: req.method
+    method: req.method,
   });
 });
 
 // Global error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  
+
   res.status(err.status || 500).json({
     success: false,
     message: err.message || 'Internal server error',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
   });
 });
 

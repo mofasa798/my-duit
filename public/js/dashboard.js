@@ -37,7 +37,8 @@ class Dashboard {
 
   renderDashboard(data) {
     const { totalIncome = 0, totalExpense = 0, balance = 0 } = data || {};
-    const savingsRate = totalIncome > 0 ? ((balance / totalIncome) * 100).toFixed(1) : '0.0';
+    const savingsRate =
+      totalIncome > 0 ? ((balance / totalIncome) * 100).toFixed(1) : '0.0';
 
     const cards = [
       {
@@ -74,7 +75,9 @@ class Dashboard {
       },
     ];
 
-    this.dashboard.innerHTML = cards.map(c => `
+    this.dashboard.innerHTML = cards
+      .map(
+        (c) => `
       <div class="card-hover rounded-xl border ${c.border} ${c.bg} p-5 flex flex-col gap-3">
         <div class="flex items-center justify-between">
           <span class="text-slate-400 text-sm font-medium">${c.label}</span>
@@ -82,7 +85,9 @@ class Dashboard {
         </div>
         <p class="text-2xl font-bold ${c.color}">${c.value}</p>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 
   renderTransactions(transactions) {
@@ -95,7 +100,9 @@ class Dashboard {
       return;
     }
 
-    const rows = transactions.map(t => `
+    const rows = transactions
+      .map(
+        (t) => `
       <tr class="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
         <td class="px-4 py-3 text-slate-300 text-sm">${t.date}</td>
         <td class="px-4 py-3 text-slate-300 text-sm">${t.category}</td>
@@ -106,7 +113,9 @@ class Dashboard {
           </span>
         </td>
       </tr>
-    `).join('');
+    `
+      )
+      .join('');
 
     this.transactionsTable.innerHTML = `
       <div class="overflow-x-auto">
@@ -126,14 +135,19 @@ class Dashboard {
   }
 
   formatIDR(amount) {
-    return (amount || 0).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
+    return (amount || 0).toLocaleString('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0,
+    });
   }
 
   setStatus(message, type = 'info') {
     const styles = {
-      info:    'bg-blue-500/10 border border-blue-500/30 text-blue-300',
-      success: 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300',
-      error:   'bg-red-500/10 border border-red-500/30 text-red-300',
+      info: 'bg-blue-500/10 border border-blue-500/30 text-blue-300',
+      success:
+        'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300',
+      error: 'bg-red-500/10 border border-red-500/30 text-red-300',
     };
     this.appStatus.className = `status-bar mb-6 rounded-xl px-4 py-3 text-sm ${styles[type] || styles.info}`;
     this.appStatus.textContent = message;

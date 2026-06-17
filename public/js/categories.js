@@ -9,18 +9,19 @@
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const container  = document.getElementById('categories-container');
-  const form       = document.getElementById('category-form');
-  const inputName  = document.getElementById('cat-name');
-  const inputType  = document.getElementById('cat-type');
-  const feedback   = document.getElementById('cat-feedback');
+  const container = document.getElementById('categories-container');
+  const form = document.getElementById('category-form');
+  const inputName = document.getElementById('cat-name');
+  const inputType = document.getElementById('cat-type');
+  const feedback = document.getElementById('cat-feedback');
 
   // ===== Helpers =====
 
   const showFeedback = (message, type = 'success') => {
     const styles = {
-      success: 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300',
-      error:   'bg-red-500/10 border border-red-500/30 text-red-300',
+      success:
+        'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300',
+      error: 'bg-red-500/10 border border-red-500/30 text-red-300',
     };
     feedback.className = `status-bar rounded-xl px-4 py-3 text-sm ${styles[type]}`;
     feedback.textContent = message;
@@ -34,12 +35,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const load = async () => {
     try {
-      container.innerHTML = '<p class="text-slate-400 text-sm animate-pulse">Memuat kategori...</p>';
-      const res  = await apiClient.getCategories();
+      container.innerHTML =
+        '<p class="text-slate-400 text-sm animate-pulse">Memuat kategori...</p>';
+      const res = await apiClient.getCategories();
       const cats = res.data || [];
 
       if (cats.length === 0) {
-        container.innerHTML = '<p class="text-slate-400 text-sm text-center py-6">Belum ada kategori.</p>';
+        container.innerHTML =
+          '<p class="text-slate-400 text-sm text-center py-6">Belum ada kategori.</p>';
         return;
       }
 
@@ -54,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               </tr>
             </thead>
             <tbody>
-              ${cats.map(c => renderRow(c)).join('')}
+              ${cats.map((c) => renderRow(c)).join('')}
             </tbody>
           </table>
         </div>
@@ -62,7 +65,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       attachEvents();
     } catch (err) {
-      container.innerHTML = '<p class="text-red-400 text-sm text-center py-6">Gagal memuat kategori.</p>';
+      container.innerHTML =
+        '<p class="text-red-400 text-sm text-center py-6">Gagal memuat kategori.</p>';
     }
   };
 
@@ -98,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <td class="px-4 py-2">
         <select class="edit-type p-1.5 rounded-lg bg-slate-700 border border-slate-600 text-sm focus:outline-none">
           <option value="expense" ${c.type === 'expense' ? 'selected' : ''}>💸 Expense</option>
-          <option value="income"  ${c.type === 'income'  ? 'selected' : ''}>💰 Income</option>
+          <option value="income"  ${c.type === 'income' ? 'selected' : ''}>💰 Income</option>
         </select>
       </td>
       <td class="px-4 py-2 flex justify-center gap-2">
@@ -116,22 +120,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const attachEvents = () => {
     // Delete
-    document.querySelectorAll('.del-btn').forEach(btn => {
+    document.querySelectorAll('.del-btn').forEach((btn) => {
       btn.addEventListener('click', async (e) => {
         const id = e.currentTarget.dataset.id;
-        if (!confirm('Hapus kategori ini? Kategori yang dipakai transaksi tidak bisa dihapus.')) return;
+        if (
+          !confirm(
+            'Hapus kategori ini? Kategori yang dipakai transaksi tidak bisa dihapus.'
+          )
+        )
+          return;
         try {
           await apiClient.deleteCategory(id);
           showFeedback('Kategori berhasil dihapus.');
           await load();
         } catch (err) {
-          showFeedback('Gagal menghapus. Kategori mungkin masih dipakai transaksi.', 'error');
+          showFeedback(
+            'Gagal menghapus. Kategori mungkin masih dipakai transaksi.',
+            'error'
+          );
         }
       });
     });
 
     // Edit — masuk mode inline
-    document.querySelectorAll('.edit-btn').forEach(btn => {
+    document.querySelectorAll('.edit-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const { id, name, type } = e.currentTarget.dataset;
         const row = document.querySelector(`tr[data-id="${id}"]`);
@@ -155,7 +167,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     row.querySelector('.save-btn').addEventListener('click', async () => {
       const newName = row.querySelector('.edit-name').value.trim();
       const newType = row.querySelector('.edit-type').value;
-      if (!newName) return showFeedback('Nama kategori tidak boleh kosong.', 'error');
+      if (!newName)
+        return showFeedback('Nama kategori tidak boleh kosong.', 'error');
       try {
         await apiClient.updateCategory(id, newName, newType);
         showFeedback('Kategori berhasil diperbarui.');
@@ -172,7 +185,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     e.preventDefault();
     const name = inputName.value.trim();
     const type = inputType.value;
-    if (!name) return showFeedback('Nama kategori tidak boleh kosong.', 'error');
+    if (!name)
+      return showFeedback('Nama kategori tidak boleh kosong.', 'error');
     try {
       await apiClient.createCategory(name, type);
       inputName.value = '';
@@ -185,7 +199,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // ===== Escape helpers =====
 
-  const escHtml = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const escHtml = (s) =>
+    String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   const escAttr = (s) => String(s).replace(/"/g, '&quot;');
 
   // ===== Init =====

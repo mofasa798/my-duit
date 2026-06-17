@@ -9,29 +9,38 @@
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const container   = document.getElementById('transactions-container');
-  const form        = document.getElementById('transaction-form');
+  const container = document.getElementById('transactions-container');
+  const form = document.getElementById('transaction-form');
   const selCategory = document.getElementById('txn-category');
   const inputAmount = document.getElementById('txn-amount');
-  const inputDate   = document.getElementById('txn-date');
-  const inputDesc   = document.getElementById('txn-desc');
-  const feedback    = document.getElementById('txn-feedback');
+  const inputDate = document.getElementById('txn-date');
+  const inputDesc = document.getElementById('txn-desc');
+  const feedback = document.getElementById('txn-feedback');
 
   // ===== Helpers =====
 
   const formatIDR = (amount) =>
-    (amount || 0).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
+    (amount || 0).toLocaleString('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0,
+    });
 
   const evalAmount = (raw) => {
     const expr = raw.replace(/[^0-9+\-*/().]/g, '');
     if (!expr) return NaN;
-    try { return Number(new Function('return ' + expr)()); } catch { return NaN; }
+    try {
+      return Number(new Function('return ' + expr)());
+    } catch {
+      return NaN;
+    }
   };
 
   const showFeedback = (message, type = 'success') => {
     const styles = {
-      success: 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300',
-      error:   'bg-red-500/10 border border-red-500/30 text-red-300',
+      success:
+        'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300',
+      error: 'bg-red-500/10 border border-red-500/30 text-red-300',
     };
     feedback.className = `status-bar rounded-xl px-4 py-3 text-sm ${styles[type] || styles.success}`;
     feedback.textContent = message;
@@ -43,8 +52,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const resetForm = () => {
     inputAmount.value = '';
-    inputDesc.value   = '';
-    inputDate.value   = '';
+    inputDesc.value = '';
+    inputDate.value = '';
     // Biarkan category tetap (lebih ergonomis saat input beberapa transaksi sekaligus)
   };
 
@@ -52,11 +61,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const loadCategories = async () => {
     try {
-      const res  = await apiClient.getCategories();
+      const res = await apiClient.getCategories();
       const cats = res.data || [];
-      selCategory.innerHTML = cats.map(c =>
-        `<option value="${c.id}">${c.name} (${c.type})</option>`
-      ).join('');
+      selCategory.innerHTML = cats
+        .map((c) => `<option value="${c.id}">${c.name} (${c.type})</option>`)
+        .join('');
     } catch (err) {
       selCategory.innerHTML = '<option value="">Gagal memuat kategori</option>';
     }
@@ -66,16 +75,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const loadTransactions = async () => {
     try {
-      container.innerHTML = '<p class="text-slate-400 text-sm animate-pulse">Memuat transaksi...</p>';
-      const res  = await apiClient.getTransactions();
+      container.innerHTML =
+        '<p class="text-slate-400 text-sm animate-pulse">Memuat transaksi...</p>';
+      const res = await apiClient.getTransactions();
       const txns = res.data || [];
 
       if (txns.length === 0) {
-        container.innerHTML = '<p class="text-slate-400 text-sm text-center py-6">Belum ada transaksi.</p>';
+        container.innerHTML =
+          '<p class="text-slate-400 text-sm text-center py-6">Belum ada transaksi.</p>';
         return;
       }
 
-      const rows = txns.map(t => `
+      const rows = txns
+        .map(
+          (t) => `
         <tr class="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
           <td class="px-4 py-3 text-slate-300 text-sm">${t.date}</td>
           <td class="px-4 py-3 text-sm">
@@ -92,7 +105,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             </button>
           </td>
         </tr>
-      `).join('');
+      `
+        )
+        .join('');
 
       container.innerHTML = `
         <div class="overflow-x-auto">
@@ -112,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       `;
 
       // Delete event
-      document.querySelectorAll('.del-btn').forEach(btn => {
+      document.querySelectorAll('.del-btn').forEach((btn) => {
         btn.addEventListener('click', async (e) => {
           const id = e.currentTarget.dataset.id;
           if (!confirm('Hapus transaksi ini?')) return;
@@ -125,9 +140,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
         });
       });
-
     } catch (err) {
-      container.innerHTML = '<p class="text-red-400 text-sm text-center py-6">Gagal memuat transaksi.</p>';
+      container.innerHTML =
+        '<p class="text-red-400 text-sm text-center py-6">Gagal memuat transaksi.</p>';
     }
   };
 
@@ -145,12 +160,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const category_id = selCategory.value;
-    const amount      = evalAmount(inputAmount.value);
+    const amount = evalAmount(inputAmount.value);
     const transaction_date = inputDate.value;
     const description = inputDesc.value.trim();
 
-    if (!category_id) return showFeedback('Pilih kategori terlebih dahulu.', 'error');
-    if (isNaN(amount) || amount <= 0) return showFeedback('Jumlah tidak valid atau bernilai 0.', 'error');
+    if (!category_id)
+      return showFeedback('Pilih kategori terlebih dahulu.', 'error');
+    if (isNaN(amount) || amount <= 0)
+      return showFeedback('Jumlah tidak valid atau bernilai 0.', 'error');
     if (!transaction_date) return showFeedback('Tanggal wajib diisi.', 'error');
 
     const submitBtn = document.getElementById('txn-submit');
@@ -158,7 +175,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     submitBtn.textContent = 'Menyimpan...';
 
     try {
-      await apiClient.createTransaction(category_id, amount, description, transaction_date);
+      await apiClient.createTransaction(
+        category_id,
+        amount,
+        description,
+        transaction_date
+      );
       resetForm();
       showFeedback('✓ Transaksi berhasil disimpan!');
       await loadTransactions();
@@ -173,10 +195,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ===== Export & Print =====
 
   const btnExport = document.getElementById('btn-export-csv');
-  if (btnExport) btnExport.addEventListener('click', () => apiClient.exportTransactionsCSV());
+  if (btnExport)
+    btnExport.addEventListener('click', () =>
+      apiClient.exportTransactionsCSV()
+    );
 
   const btnPrint = document.getElementById('btn-print-preview');
-  if (btnPrint) btnPrint.addEventListener('click', () => window.open('/html/print.html?type=transactions', '_blank'));
+  if (btnPrint)
+    btnPrint.addEventListener('click', () =>
+      window.open('/html/print.html?type=transactions', '_blank')
+    );
 
   // ===== Init =====
   await loadCategories();

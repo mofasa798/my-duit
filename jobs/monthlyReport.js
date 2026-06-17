@@ -12,22 +12,25 @@ const computePeriodForLastMonth = () => {
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
-  
+
   // Last day of previous month
   const lastDayOfPrevMonth = new Date(currentYear, currentMonth, 0);
   const periodEnd = formatDate(lastDayOfPrevMonth);
-  
+
   // First day of previous month
   const firstDayOfPrevMonth = new Date(currentYear, currentMonth - 1, 1);
   const periodStart = formatDate(firstDayOfPrevMonth);
-  
+
   return { periodStart, periodEnd };
 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const runMonthlyReport = async (periodStartArg, periodEndArg) => {
-  const { periodStart, periodEnd } = periodStartArg && periodEndArg ? { periodStart: periodStartArg, periodEnd: periodEndArg } : computePeriodForLastMonth();
+  const { periodStart, periodEnd } =
+    periodStartArg && periodEndArg
+      ? { periodStart: periodStartArg, periodEnd: periodEndArg }
+      : computePeriodForLastMonth();
 
   const maxRetries = parseInt(process.env.REPORT_RETRY_MAX || '3', 10);
   const baseMs = parseInt(process.env.REPORT_RETRY_BASE_MS || '500', 10);
@@ -41,14 +44,29 @@ const runMonthlyReport = async (periodStartArg, periodEndArg) => {
       ['monthly', periodStart, periodEnd]
     );
     if (existing && existing.length > 0) {
-      logger.info({ periodStart, periodEnd, reportId: existing[0].id }, 'Monthly report already exists; skipping save');
+      logger.info(
+        { periodStart, periodEnd, reportId: existing[0].id },
+        'Monthly report already exists; skipping save'
+      );
       metrics.emitSkipped('monthly', { periodStart, periodEnd });
-      await audit.recordEvent({ reportId: existing[0].id, action: 'skipped', periodStart, periodEnd, details: { reason: 'already_exists' } });
-      const report = await reportService.computeWeeklyReport(periodStart, periodEnd);
+      await audit.recordEvent({
+        reportId: existing[0].id,
+        action: 'skipped',
+        periodStart,
+        periodEnd,
+        details: { reason: 'already_exists' },
+      });
+      const report = await reportService.computeWeeklyReport(
+        periodStart,
+        periodEnd
+      );
       return report;
     }
   } catch (err) {
-    logger.error({ err, periodStart, periodEnd }, 'Failed to check existing monthly reports');
+    logger.error(
+      { err, periodStart, periodEnd },
+      'Failed to check existing monthly reports'
+    );
     // continue to attempt report generation
   }
 
@@ -56,27 +74,73 @@ const runMonthlyReport = async (periodStartArg, periodEndArg) => {
   while (attempt <= maxRetries) {
     try {
       // record start attempt
-      await audit.recordEvent({ action: 'started', periodStart, periodEnd, details: { attempt: attempt + 1, reportType: 'monthly' } });
+      await audit.recordEvent({
+        action: 'started',
+        periodStart,
+        periodEnd,
+        details: { attempt: attempt + 1, reportType: 'monthly' },
+      });
       attempt += 1;
-      logger.info({ attempt, periodStart, periodEnd }, 'Running monthly report');
+      logger.info(
+        { attempt, periodStart, periodEnd },
+        'Running monthly report'
+      );
 
-      const report = await reportService.computeMonthlyReport(periodStart, periodEnd);
-      await reportService.saveReport('monthly', periodStart, periodEnd, report.totalIncome, report.totalExpense, report.netSavings);
+      const report = await reportService.computeMonthlyReport(
+        periodStart,
+        periodEnd
+      );
+      await reportService.saveReport(
+        'monthly',
+        periodStart,
+        periodEnd,
+        report.totalIncome,
+        report.totalExpense,
+        report.netSavings
+      );
 
       const durationMs = Date.now() - startTime;
       const durationSec = durationMs / 1000;
-      logger.info({ periodStart, periodEnd, durationMs, durationSec, attempt }, 'Monthly report generated successfully');
+      logger.info(
+        { periodStart, periodEnd, durationMs, durationSec, attempt },
+        'Monthly report generated successfully'
+      );
       metrics.emitGenerated('monthly', { periodStart, periodEnd });
-      metrics.observeDuration('monthly', { periodStart, periodEnd }, durationSec);
+      metrics.observeDuration(
+        'monthly',
+        { periodStart, periodEnd },
+        durationSec
+      );
       metrics.recordLastReportTimestamp('monthly', new Date());
-      await audit.recordEvent({ reportId: null, action: 'generated', periodStart, periodEnd, details: { durationMs, attempt, reportType: 'monthly' } });
+      await audit.recordEvent({
+        reportId: null,
+        action: 'generated',
+        periodStart,
+        periodEnd,
+        details: { durationMs, attempt, reportType: 'monthly' },
+      });
       return report;
     } catch (err) {
-      logger.error({ err, attempt, periodStart, periodEnd }, 'Monthly report attempt failed');
+      logger.error(
+        { err, attempt, periodStart, periodEnd },
+        'Monthly report attempt failed'
+      );
       if (attempt > maxRetries) {
-        logger.error({ periodStart, periodEnd, attempts: attempt }, 'Monthly report failed after max retries');
+        logger.error(
+          { periodStart, periodEnd, attempts: attempt },
+          'Monthly report failed after max retries'
+        );
         metrics.emitFailed('monthly', { periodStart, periodEnd }, attempt);
-        await audit.recordEvent({ action: 'failed', periodStart, periodEnd, details: { attempts: attempt, error: err.message, reportType: 'monthly' } });
+        await audit.recordEvent({
+          action: 'failed',
+          periodStart,
+          periodEnd,
+          details: {
+            attempts: attempt,
+            error: err.message,
+            reportType: 'monthly',
+          },
+        });
         throw err;
       }
       const backoff = baseMs * Math.pow(2, attempt - 1);
@@ -97,12 +161,18 @@ const scheduleMonthly = () => {
     try {
       const acquired = await lockService.acquireLock(lockName, owner, ttlMs);
       if (!acquired) {
-        logger.info({ owner }, 'Scheduler lock not acquired; skipping scheduled monthly run');
+        logger.info(
+          { owner },
+          'Scheduler lock not acquired; skipping scheduled monthly run'
+        );
         metrics.emitLockFailed('monthly');
         return;
       }
 
-      logger.info({ owner }, 'Scheduler lock acquired; executing scheduled monthly job');
+      logger.info(
+        { owner },
+        'Scheduler lock acquired; executing scheduled monthly job'
+      );
       metrics.emitLockAcquired('monthly');
       await runMonthlyReport();
 

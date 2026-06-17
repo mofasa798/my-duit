@@ -1,6 +1,6 @@
 /**
  * server.js
- * 
+ *
  * Entry point untuk aplikasi Express
  * Handles:
  * - Load environment variables

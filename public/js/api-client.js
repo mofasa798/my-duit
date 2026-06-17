@@ -1,6 +1,6 @@
 /**
  * public/js/api-client.js
- * 
+ *
  * HTTP client untuk communicate dengan backend API
  * Menghandle:
  * - GET, POST, PUT, DELETE requests
@@ -25,7 +25,7 @@ class ApiClient {
       method,
       headers: {
         'Content-Type': 'application/json',
-      }
+      },
     };
 
     if (data) {
@@ -34,7 +34,7 @@ class ApiClient {
 
     try {
       const response = await fetch(url, options);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -48,7 +48,7 @@ class ApiClient {
   }
 
   // ==================== CATEGORIES ====================
-  
+
   async getCategories() {
     return this.request('/categories');
   }
@@ -77,16 +77,22 @@ class ApiClient {
       category_id: categoryId,
       amount,
       description,
-      transaction_date: transactionDate
+      transaction_date: transactionDate,
     });
   }
 
-  async updateTransaction(id, categoryId, amount, description, transactionDate) {
+  async updateTransaction(
+    id,
+    categoryId,
+    amount,
+    description,
+    transactionDate
+  ) {
     return this.request(`/transactions/${id}`, 'PUT', {
       category_id: categoryId,
       amount,
       description,
-      transaction_date: transactionDate
+      transaction_date: transactionDate,
     });
   }
 

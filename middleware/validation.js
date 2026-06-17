@@ -21,7 +21,8 @@ const validatePeriodInput = (req, res, next) => {
   if (!periodStart || !periodEnd) {
     return res.status(400).json({
       success: false,
-      error: 'Both periodStart and periodEnd are required when providing a custom period.',
+      error:
+        'Both periodStart and periodEnd are required when providing a custom period.',
     });
   }
 

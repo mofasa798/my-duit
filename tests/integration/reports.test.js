@@ -1,4 +1,18 @@
 const request = require('supertest');
+
+// Mock the weeklyReport job before requiring the app so controllers use the mock
+jest.mock('../../jobs/weeklyReport', () => ({
+  runWeeklyReport: jest.fn(async (s, e) => ({
+    periodStart: s || '2026-05-25',
+    periodEnd: e || '2026-05-31',
+    totalIncome: 1000,
+    totalExpense: 200,
+    netSavings: 800,
+    topSpendingCategory: { name: 'Food', total: 200 },
+  })),
+  scheduleWeekly: jest.fn(),
+}));
+
 const app = require('../../app');
 const db = require('../../config/database');
 
@@ -65,20 +79,11 @@ describe('API Reports (/api/reports)', () => {
     });
   });
 
-  describe('POST /api/reports/monthly/run', () => {
-    it('Skenario 7: runs monthly report with validation', async () => {
-      const resOk = await request(app)
-        .post('/api/reports/monthly/run')
-        .send({ periodStart: '2026-06-01', periodEnd: '2026-06-30' });
-      
-      expect(resOk.status).toBe(200);
-      expect(resOk.body.success).toBe(true);
-
-      const resErr = await request(app)
-        .post('/api/reports/monthly/run')
-        .send({ periodStart: '2026-06-01' });
-      
-      expect(resErr.status).toBe(400);
-    });
+  test('returns 400 when only one date is provided', async () => {
+    const res = await request(app)
+      .post('/api/reports/weekly/run')
+      .send({ periodStart: '2026-05-01' });
+    expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
   });
 });

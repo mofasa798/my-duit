@@ -17,7 +17,10 @@ describe('lockService', () => {
     expect(gotB).toBe(false);
 
     // expire lock by updating expires_at to past
-    await db.runAsync(`UPDATE locks SET expires_at = ? WHERE name = ?`, [new Date(0).toISOString(), lockName]);
+    await db.runAsync(`UPDATE locks SET expires_at = ? WHERE name = ?`, [
+      new Date(0).toISOString(),
+      lockName,
+    ]);
 
     // Now B should be able to acquire
     const gotBAfter = await lockService.acquireLock(lockName, ownerB, ttlMs);
