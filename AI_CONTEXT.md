@@ -151,8 +151,8 @@ Membangun Personal Finance Dashboard sebagai learning project untuk:
 6. ✅ Phase 6 DONE: Weekly & Monthly reports + Frontend UI
 7. ✅ Phase 7 DONE: Export features + Print Preview
 8. ✅ Phase 8 DONE: Refactoring & optimization (incl. hamburger menu parity)
-9. → Phase 9: Testing & debugging (next)
-10. → Phase 10: Portfolio preparation
+9. ✅ Phase 9 DONE: Testing & debugging (Integration/API tests for all REST endpoints)
+10. → Phase 10: Portfolio preparation (next)
 
 ## Notes
 
