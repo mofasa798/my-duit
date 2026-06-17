@@ -21,9 +21,7 @@
       "type": "stat",
       "title": "Weekly Reports Failed",
       "datasource": "Prometheus",
-      "targets": [
-        { "expr": "sum(reports_weekly_failed_total)", "refId": "A" }
-      ],
+      "targets": [{ "expr": "sum(reports_weekly_failed_total)", "refId": "A" }],
       "id": 2,
       "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }
     },
@@ -52,8 +50,16 @@
       "title": "Report Generation Duration (s)",
       "datasource": "Prometheus",
       "targets": [
-        { "expr": "histogram_quantile(0.5, sum(rate(reports_weekly_duration_seconds_bucket[5m])) by (le))", "legendFormat": "p50", "refId": "A" },
-        { "expr": "histogram_quantile(0.95, sum(rate(reports_weekly_duration_seconds_bucket[5m])) by (le))", "legendFormat": "p95", "refId": "B" }
+        {
+          "expr": "histogram_quantile(0.5, sum(rate(reports_weekly_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p50",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(reports_weekly_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p95",
+          "refId": "B"
+        }
       ],
       "id": 4,
       "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 }
@@ -63,7 +69,11 @@
       "title": "Audit Events Distribution",
       "datasource": "Prometheus",
       "targets": [
-        { "expr": "sum(rate(report_audit_events_total[5m])) by (action)", "legendFormat": "{{ action }}", "refId": "A" }
+        {
+          "expr": "sum(rate(report_audit_events_total[5m])) by (action)",
+          "legendFormat": "{{ action }}",
+          "refId": "A"
+        }
       ],
       "id": 11,
       "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 }
@@ -73,7 +83,10 @@
       "title": "Last Report Generated",
       "datasource": "Prometheus",
       "targets": [
-        { "expr": "time() - report_last_generated_timestamp_seconds", "refId": "A" }
+        {
+          "expr": "time() - report_last_generated_timestamp_seconds",
+          "refId": "A"
+        }
       ],
       "fieldConfig": {
         "defaults": { "unit": "s" }
@@ -96,7 +109,10 @@
       "title": "Failure Rate (1h)",
       "datasource": "Prometheus",
       "targets": [
-        { "expr": "100 * (increase(reports_weekly_failed_total[1h]) / max(1, increase(reports_weekly_failed_total[1h]) + increase(reports_weekly_generated_total[1h])))", "refId": "A" }
+        {
+          "expr": "100 * (increase(reports_weekly_failed_total[1h]) / max(1, increase(reports_weekly_failed_total[1h]) + increase(reports_weekly_generated_total[1h])))",
+          "refId": "A"
+        }
       ],
       "fieldConfig": {
         "defaults": { "unit": "percent" }

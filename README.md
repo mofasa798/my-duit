@@ -3,6 +3,7 @@
 Aplikasi Personal Finance Dashboard untuk belajar backend engineering, REST API, database design, dan frontend sederhana.
 
 ## Deskripsi
+
 My Duit adalah aplikasi yang membantu pengguna mencatat transaksi keuangan, melihat ringkasan arus kas, dan mempersiapkan fitur laporan dan export. Aplikasi ini dibangun dengan:
 
 - Backend: Node.js, Express.js
@@ -10,17 +11,23 @@ My Duit adalah aplikasi yang membantu pengguna mencatat transaksi keuangan, meli
 - Frontend: HTML, TailwindCSS, Vanilla JavaScript
 - Automation: node-cron (future enhancement)
 
+## Demo & Screenshots
+
+![Dashboard Screenshot](https://via.placeholder.com/800x400?text=Dashboard+Screenshot)
+*(Screenshot placeholder - akan diisi dengan gambar asli nanti)*
+
 ## Fitur Saat Ini
+
 - Dashboard sederhana dengan ringkasan total income, total expense, dan saldo
 - CRUD kategori transaksi
 - CRUD transaksi
 - Struktur aplikasi modular dengan routes, controllers, services, dan database helper
 - Database schema untuk categories, transactions, dan reports
- - Frontend CRUD UI untuk `categories` dan `transactions` (pages: `/html/categories.html`, `/html/transactions.html`)
- - Frontend UI untuk Laporan Mingguan & Bulanan (page: `/html/reports.html`) dengan dukungan periode kustom
- - Fitur Export ke CSV secara native untuk transaksi dan laporan
- - Fitur Print Preview dengan layout khusus yang dioptimalkan untuk cetak (`/html/print.html`)
- - Optimized Frontend Build dengan kompilasi murni TailwindCSS v4 CLI
+- Frontend CRUD UI untuk `categories` dan `transactions` (pages: `/html/categories.html`, `/html/transactions.html`)
+- Frontend UI untuk Laporan Mingguan & Bulanan (page: `/html/reports.html`) dengan dukungan periode kustom
+- Fitur Export ke CSV secara native untuk transaksi dan laporan
+- Fitur Print Preview dengan layout khusus yang dioptimalkan untuk cetak (`/html/print.html`)
+- Optimized Frontend Build dengan kompilasi murni TailwindCSS v4 CLI
 
 ## Struktur Proyek
 
@@ -73,6 +80,15 @@ my-duit/
 └── README.md
 ```
 
+## Application Architecture
+
+Aplikasi ini menggunakan pola arsitektur modular yang rapi:
+- **Frontend (Client)**: Menggunakan HTML, Vanilla JavaScript, dan TailwindCSS v4. Menangani manipulasi DOM dan memanggil API (berada di \`/public\`).
+- **Routes**: Mendefinisikan endpoint API dan memetakan request ke controller (\`/routes\`).
+- **Controllers**: Menangani ekstraksi request HTTP dan pengiriman response JSON, lalu memanggil layer service (\`/controllers\`).
+- **Services**: Menyimpan inti *business logic* dan interaksi database, membuat kode sangat mudah di-test (\`/services\`).
+- **Database Helper**: Membungkus driver SQLite dengan *promises* agar bisa menggunakan `async/await` (\`/config/database.js\`).
+
 ## Setup
 
 1. Clone repository atau salin folder ke lokal.
@@ -116,6 +132,15 @@ http://localhost:3000/html/categories.html
 http://localhost:3000/html/transactions.html
 ```
 
+## Deployment Guide (Render / Railway / Fly.io)
+
+Aplikasi ini dioptimalkan untuk mudah di-deploy di platform cloud (PaaS):
+1. Buat proyek/Web Service baru di cloud provider pilihan Anda.
+2. Hubungkan repositori GitHub ini.
+3. **Build Command**: `npm install && npm run build:css`
+4. **Start Command**: `npm start`
+5. *Catatan Penting*: Karena menggunakan SQLite, pastikan Anda melakukan **mount persistent volume** di direktori kerja aplikasi agar file `finance.db` tidak terhapus setiap kali server direstart oleh cloud provider. Database akan di-generate otomatis saat pertama kali berjalan.
+
 ## Endpoint API
 
 - `GET /api/health`
@@ -142,21 +167,19 @@ npm run test:api
 ```
 
 Script ini akan:
+
 - Menjalankan server secara sementara
 - Memanggil `/api/health`
 - Menguji CRUD kategori
 - Menguji CRUD transaksi
 - Menguji endpoint dashboard
- - Menjalankan unit tests (Jest) dan integration tests (Supertest) untuk endpoint kritis
+- Menjalankan unit tests (Jest) dan integration tests (Supertest) untuk endpoint kritis
 
 Catatan: Automated API tests telah dijalankan dan lulus selama pengembangan.
 
 ## Weekly & Monthly Reports (Phase 6)
 
 Server menyediakan job mingguan dan bulanan yang akan menghasilkan laporan mingguan (setiap Minggu) dan laporan bulanan (setiap tanggal 1).
-
-
-
 
 Untuk men-trigger laporan secara manual (testing), jalankan:
 
@@ -166,7 +189,7 @@ npm run run:weekly
 
 Endpoint untuk laporan:
 
-- `GET /api/reports`  -> daftar laporan
+- `GET /api/reports` -> daftar laporan
 - `POST /api/reports/weekly/run` -> trigger manual pembuatan laporan mingguan
 
 Penjadwalan:
@@ -174,90 +197,91 @@ Penjadwalan:
 - Cron expression: `5 0 * * 0` (Setiap Minggu pukul 00:05) menggunakan `node-cron`.
 
 Untuk laporan bulanan, penjadwalan menggunakan cron:
+
 - Cron expression: `10 0 1 * *` (Setiap tanggal 1 pukul 00:10)
 
 Catatan: Job telah diuji dengan `npm run run:weekly` dan hasil laporan disimpan di tabel `reports`.
 
 Request Body (opsional)
 
- - Endpoint `POST /api/reports/weekly/run` menerima body JSON opsional untuk menentukan periode khusus:
-	 - `periodStart`: tanggal mulai dalam format `YYYY-MM-DD`
-	 - `periodEnd`: tanggal akhir dalam format `YYYY-MM-DD`
+- Endpoint `POST /api/reports/weekly/run` menerima body JSON opsional untuk menentukan periode khusus:
+  - `periodStart`: tanggal mulai dalam format `YYYY-MM-DD`
+  - `periodEnd`: tanggal akhir dalam format `YYYY-MM-DD`
 
 Contoh body:
 
 ```json
 {
-	"periodStart": "2026-05-25",
-	"periodEnd": "2026-05-31"
+  "periodStart": "2026-05-25",
+  "periodEnd": "2026-05-31"
 }
 ```
 
 Validasi:
 
- - Jika salah satu dari `periodStart` atau `periodEnd` diberikan, maka keduanya wajib.
- - Format tanggal harus `YYYY-MM-DD`.
- - `periodStart` harus lebih kecil atau sama dengan `periodEnd`.
- - Jika validasi gagal, server merespon dengan status `400` dan pesan error yang menjelaskan.
+- Jika salah satu dari `periodStart` atau `periodEnd` diberikan, maka keduanya wajib.
+- Format tanggal harus `YYYY-MM-DD`.
+- `periodStart` harus lebih kecil atau sama dengan `periodEnd`.
+- Jika validasi gagal, server merespon dengan status `400` dan pesan error yang menjelaskan.
 
 Status pengembangan:
 
 - `2026-06-02`: Validation middleware ditambahkan untuk endpoint laporan; unit tests untuk `reportService` dibuat dan lulus.
- - `2026-06-02`: Integration tests untuk `POST /api/reports/weekly/run` ditambahkan (supertest) dan lulus.
+- `2026-06-02`: Integration tests untuk `POST /api/reports/weekly/run` ditambahkan (supertest) dan lulus.
 
 - `2026-06-03`: Weekly job hardened: structured logging (`pino`), idempotency checks, and retry/backoff (env: `REPORT_RETRY_MAX`, `REPORT_RETRY_BASE_MS`).
 
 Metrics (stub)
 
- - The weekly job now emits simple metrics as structured log events. These are currently logged via the `utils/metrics.js` stub.
- - Emitted metric names:
-	 - `reports.weekly.generated` : emitted on successful generation (labels: `periodStart`, `periodEnd`, `duration`)
-	 - `reports.weekly.failed` : emitted when the job fails after retries (labels: `periodStart`, `periodEnd`, `attempts`)
-	 - `reports.weekly.skipped` : emitted when a report already exists for the period (labels: `periodStart`, `periodEnd`)
- - Integration: replace `utils/metrics.js` with real exporter (Prometheus, Datadog, etc.) or forward logs to a log-based metric pipeline.
+- The weekly job now emits simple metrics as structured log events. These are currently logged via the `utils/metrics.js` stub.
+- Emitted metric names:
+  - `reports.weekly.generated` : emitted on successful generation (labels: `periodStart`, `periodEnd`, `duration`)
+  - `reports.weekly.failed` : emitted when the job fails after retries (labels: `periodStart`, `periodEnd`, `attempts`)
+  - `reports.weekly.skipped` : emitted when a report already exists for the period (labels: `periodStart`, `periodEnd`)
+- Integration: replace `utils/metrics.js` with real exporter (Prometheus, Datadog, etc.) or forward logs to a log-based metric pipeline.
 
-	Prometheus + Grafana (local)
+  Prometheus + Grafana (local)
 
-	1. Start services:
+  1.  Start services:
 
-	```bash
-	docker-compose up -d
-	```
+  ```bash
+  docker-compose up -d
+  ```
 
-	2. Ensure your app is running on port `3000` (default). Prometheus scrapes `http://host.docker.internal:3000/metrics` by default.
+  2.  Ensure your app is running on port `3000` (default). Prometheus scrapes `http://host.docker.internal:3000/metrics` by default.
 
-	3. Open Prometheus: http://localhost:9090 and Grafana: http://localhost:3001 (user: `admin`, password: `admin`).
+  3.  Open Prometheus: http://localhost:9090 and Grafana: http://localhost:3001 (user: `admin`, password: `admin`).
 
-	4. In Grafana, add a Prometheus data source pointing to `http://prometheus:9090` (when using Docker compose) or `http://localhost:9090` when accessing locally.
+  4.  In Grafana, add a Prometheus data source pointing to `http://prometheus:9090` (when using Docker compose) or `http://localhost:9090` when accessing locally.
 
-	Notes:
+  Notes:
 
-	- If Docker cannot resolve `host.docker.internal`, adjust `monitoring/prometheus.yml` to point directly at your host or container address.
-	- You can import dashboards in Grafana to visualize `reports_weekly_generated_total`, `reports_weekly_failed_total`, and `reports_weekly_skipped_total`.
+  - If Docker cannot resolve `host.docker.internal`, adjust `monitoring/prometheus.yml` to point directly at your host or container address.
+  - You can import dashboards in Grafana to visualize `reports_weekly_generated_total`, `reports_weekly_failed_total`, and `reports_weekly_skipped_total`.
 
-	Grafana provisioning
+  Grafana provisioning
 
-	- The repository includes a sample Grafana dashboard and provisioning config under `monitoring/grafana`.
-	- When using `docker-compose up -d`, Grafana will auto-provision Prometheus datasource and the dashboard `Weekly Reports Overview`.
+  - The repository includes a sample Grafana dashboard and provisioning config under `monitoring/grafana`.
+  - When using `docker-compose up -d`, Grafana will auto-provision Prometheus datasource and the dashboard `Weekly Reports Overview`.
 
-	Alerting (Prometheus + Alertmanager)
+  Alerting (Prometheus + Alertmanager)
 
-	- A set of alerting rules is included at `monitoring/alerting/alert.rules.yml` (failures, missing reports, high failure rate).
-	- Alertmanager is included in `docker-compose.yml` with config at `monitoring/alertmanager/alertmanager.yml`.
-	- You must configure real receivers (email, Slack, webhook) in `monitoring/alertmanager/alertmanager.yml` before expecting notifications.
+  - A set of alerting rules is included at `monitoring/alerting/alert.rules.yml` (failures, missing reports, high failure rate).
+  - Alertmanager is included in `docker-compose.yml` with config at `monitoring/alertmanager/alertmanager.yml`.
+  - You must configure real receivers (email, Slack, webhook) in `monitoring/alertmanager/alertmanager.yml` before expecting notifications.
 
-	Example: to run the monitoring stack including Alertmanager:
+  Example: to run the monitoring stack including Alertmanager:
 
-	```bash
-	docker-compose up -d
-	```
+  ```bash
+  docker-compose up -d
+  ```
 
-	Prometheus will send alerts to Alertmanager at `http://localhost:9093`.
+  Prometheus will send alerts to Alertmanager at `http://localhost:9093`.
 
-	Testing alerts:
+  Testing alerts:
 
-	- Use Prometheus UI (`/alerts`) to view firing alerts.
-	- For manual trigger during testing you can increase the failed counter via a temporary script or use Prometheus `amtool`.
+  - Use Prometheus UI (`/alerts`) to view firing alerts.
+  - For manual trigger during testing you can increase the failed counter via a temporary script or use Prometheus `amtool`.
 
 Contoh `curl`
 
@@ -286,6 +310,7 @@ Catatan: `jq` berguna untuk memformat output JSON di terminal, tapi opsional.
 ## Responsive UI
 
 Semua halaman (`index`, `transactions`, `categories`, `reports`) sudah responsive dengan pattern yang konsisten:
+
 - **Desktop (≥768px)**: nav link inline di header.
 - **Mobile (<768px)**: hamburger button (☰) yang membuka dropdown menu; tap di luar atau resize ke desktop akan menutup otomatis.
 - A11y: `aria-label` dan `aria-expanded` di-update saat toggle.
@@ -307,6 +332,7 @@ Commit terakhir: `f4bb845 feat(ui): add hamburger menu to categories & reports p
 ## Kontribusi
 
 Ini adalah proyek belajar. Jika ingin mengembangkan, fokuskan pada perbaikan:
+
 - Validasi input lebih kuat
 - UI CRUD transaksi
 - Fitur laporan mingguan/bulanan

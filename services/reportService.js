@@ -49,13 +49,27 @@ const computeReport = async (periodStart, periodEnd) => {
     ? { name: topCategory[0].name, total: topCategory[0].total }
     : null;
 
-  return { periodStart, periodEnd, totalIncome, totalExpense, netSavings, topSpendingCategory };
+  return {
+    periodStart,
+    periodEnd,
+    totalIncome,
+    totalExpense,
+    netSavings,
+    topSpendingCategory,
+  };
 };
 
 /**
  * Simpan laporan ke tabel reports.
  */
-const saveReport = async (reportType, periodStart, periodEnd, totalIncome, totalExpense, netSavings) => {
+const saveReport = async (
+  reportType,
+  periodStart,
+  periodEnd,
+  totalIncome,
+  totalExpense,
+  netSavings
+) => {
   const res = await runAsync(
     `INSERT INTO reports (report_type, period_start, period_end, total_income, total_expense, net_savings) VALUES (?, ?, ?, ?, ?, ?)`,
     [reportType, periodStart, periodEnd, totalIncome, totalExpense, netSavings]

@@ -1,6 +1,13 @@
 const express = require('express');
-const { listReports, runWeekly, runMonthly } = require('../controllers/reportController');
-const { validateWeeklyRun, validateMonthlyRun } = require('../middleware/validation');
+const {
+  listReports,
+  runWeekly,
+  runMonthly,
+} = require('../controllers/reportController');
+const {
+  validateWeeklyRun,
+  validateMonthlyRun,
+} = require('../middleware/validation');
 
 const router = express.Router();
 

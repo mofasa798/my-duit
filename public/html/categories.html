@@ -1,94 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="My Duit — Kelola kategori income dan expense Anda.">
-  <title>Categories — My Duit</title>
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body class="bg-slate-950 text-white min-h-screen">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="My Duit — Kelola kategori income dan expense Anda."
+    />
+    <title>Categories — My Duit</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body class="bg-slate-950 text-white min-h-screen">
+    <!-- ===== TOP NAV ===== -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+      <div
+        class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between"
+      >
+        <a
+          href="/html/index.html"
+          class="flex items-center gap-2 font-bold text-lg tracking-tight"
+        >
+          <span class="text-2xl">💰</span>
+          <span class="text-white"
+            >My <span class="text-emerald-400">Duit</span></span
+          >
+        </a>
 
-  <!-- ===== TOP NAV ===== -->
-  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="/html/index.html" class="flex items-center gap-2 font-bold text-lg tracking-tight">
-        <span class="text-2xl">💰</span>
-        <span class="text-white">My <span class="text-emerald-400">Duit</span></span>
-      </a>
+        <!-- Desktop nav -->
+        <nav class="hidden md:flex items-center gap-1">
+          <a
+            href="/html/index.html"
+            class="nav-link px-3 py-1.5 text-sm text-slate-300 hover:text-white rounded-md"
+            >🏠 Dashboard</a
+          >
+          <a
+            href="/html/transactions.html"
+            class="nav-link px-3 py-1.5 text-sm text-slate-300 hover:text-white rounded-md"
+            >💸 Transactions</a
+          >
+          <a
+            href="/html/categories.html"
+            class="nav-link px-3 py-1.5 text-sm text-slate-300 hover:text-white rounded-md"
+            >🗂️ Categories</a
+          >
+          <a
+            href="/html/reports.html"
+            class="nav-link px-3 py-1.5 text-sm text-slate-300 hover:text-white rounded-md"
+            >📊 Reports</a
+          >
+        </nav>
 
-      <!-- Desktop nav -->
-      <nav class="hidden md:flex items-center gap-1">
-        <a href="/html/index.html"        class="nav-link px-3 py-1.5 text-sm text-slate-300 hover:text-white rounded-md">🏠 Dashboard</a>
-        <a href="/html/transactions.html" class="nav-link px-3 py-1.5 text-sm text-slate-300 hover:text-white rounded-md">💸 Transactions</a>
-        <a href="/html/categories.html"   class="nav-link px-3 py-1.5 text-sm text-slate-300 hover:text-white rounded-md">🗂️ Categories</a>
-        <a href="/html/reports.html"      class="nav-link px-3 py-1.5 text-sm text-slate-300 hover:text-white rounded-md">📊 Reports</a>
-      </nav>
-
-      <!-- Hamburger button (mobile only) -->
-      <button id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false"
-              class="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
-        <svg id="nav-icon-open" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-        <svg id="nav-icon-close" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- Mobile dropdown menu -->
-    <div id="nav-mobile-menu"
-         class="hidden md:hidden opacity-0 -translate-y-2 transition-all duration-200
-                bg-slate-900 border-t border-slate-800 px-4 py-3 flex flex-col gap-1">
-      <a href="/html/index.html"        class="nav-link block px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg">🏠 Dashboard</a>
-      <a href="/html/transactions.html" class="nav-link block px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg">💸 Transactions</a>
-      <a href="/html/categories.html"   class="nav-link block px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg">🗂️ Categories</a>
-      <a href="/html/reports.html"      class="nav-link block px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg">📊 Reports</a>
-    </div>
-  </header>
-
-  <main class="max-w-3xl mx-auto px-6 py-10">
-
-    <!-- Page heading -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold">Categories</h1>
-      <p class="text-slate-400 mt-1 text-sm">Kelola kategori pemasukan dan pengeluaran Anda</p>
-    </div>
-
-    <!-- Feedback bar -->
-    <div id="cat-feedback" class="status-bar mb-5"></div>
-
-    <!-- Add Category form -->
-    <section class="bg-slate-900 rounded-xl border border-slate-800 p-6 mb-8">
-      <h2 class="font-semibold text-base mb-4">➕ Tambah Kategori</h2>
-      <form id="category-form" class="flex flex-col sm:flex-row gap-3">
-        <input id="cat-name" type="text" placeholder="Nama kategori"
-               class="flex-1 p-2.5 rounded-lg bg-slate-800 border border-slate-700 text-sm focus:outline-none focus:border-emerald-500" />
-        <select id="cat-type"
-                class="p-2.5 rounded-lg bg-slate-800 border border-slate-700 text-sm focus:outline-none focus:border-emerald-500">
-          <option value="expense">💸 Expense</option>
-          <option value="income">💰 Income</option>
-        </select>
-        <button type="submit"
-                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap">
-          Tambah
+        <!-- Hamburger button (mobile only) -->
+        <button
+          id="nav-hamburger"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+          class="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+        >
+          <svg
+            id="nav-icon-open"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+          <svg
+            id="nav-icon-close"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6 hidden"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
         </button>
-      </form>
-    </section>
-
-    <!-- Categories list -->
-    <section class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
-      <div class="px-6 py-4 border-b border-slate-800">
-        <h2 class="font-semibold text-base">Daftar Kategori</h2>
       </div>
-      <div id="categories-container" class="p-6 text-sm text-slate-400">Loading...</div>
-    </section>
 
-  </main>
+      <!-- Mobile dropdown menu -->
+      <div
+        id="nav-mobile-menu"
+        class="hidden md:hidden opacity-0 -translate-y-2 transition-all duration-200 bg-slate-900 border-t border-slate-800 px-4 py-3 flex flex-col gap-1"
+      >
+        <a
+          href="/html/index.html"
+          class="nav-link block px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg"
+          >🏠 Dashboard</a
+        >
+        <a
+          href="/html/transactions.html"
+          class="nav-link block px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg"
+          >💸 Transactions</a
+        >
+        <a
+          href="/html/categories.html"
+          class="nav-link block px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg"
+          >🗂️ Categories</a
+        >
+        <a
+          href="/html/reports.html"
+          class="nav-link block px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg"
+          >📊 Reports</a
+        >
+      </div>
+    </header>
 
-  <script src="/js/api-client.js"></script>
-  <script src="/js/nav.js"></script>
-  <script src="/js/categories.js"></script>
-</body>
+    <main class="max-w-3xl mx-auto px-6 py-10">
+      <!-- Page heading -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold">Categories</h1>
+        <p class="text-slate-400 mt-1 text-sm">
+          Kelola kategori pemasukan dan pengeluaran Anda
+        </p>
+      </div>
+
+      <!-- Feedback bar -->
+      <div id="cat-feedback" class="status-bar mb-5"></div>
+
+      <!-- Add Category form -->
+      <section class="bg-slate-900 rounded-xl border border-slate-800 p-6 mb-8">
+        <h2 class="font-semibold text-base mb-4">➕ Tambah Kategori</h2>
+        <form id="category-form" class="flex flex-col sm:flex-row gap-3">
+          <input
+            id="cat-name"
+            type="text"
+            placeholder="Nama kategori"
+            class="flex-1 p-2.5 rounded-lg bg-slate-800 border border-slate-700 text-sm focus:outline-none focus:border-emerald-500"
+          />
+          <select
+            id="cat-type"
+            class="p-2.5 rounded-lg bg-slate-800 border border-slate-700 text-sm focus:outline-none focus:border-emerald-500"
+          >
+            <option value="expense">💸 Expense</option>
+            <option value="income">💰 Income</option>
+          </select>
+          <button
+            type="submit"
+            class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap"
+          >
+            Tambah
+          </button>
+        </form>
+      </section>
+
+      <!-- Categories list -->
+      <section
+        class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden"
+      >
+        <div class="px-6 py-4 border-b border-slate-800">
+          <h2 class="font-semibold text-base">Daftar Kategori</h2>
+        </div>
+        <div id="categories-container" class="p-6 text-sm text-slate-400">
+          Loading...
+        </div>
+      </section>
+    </main>
+
+    <script src="/js/api-client.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/categories.js"></script>
+  </body>
 </html>

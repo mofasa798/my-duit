@@ -8,22 +8,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const currentPath = window.location.pathname;
 
   // ===== Active link highlight =====
-  document.querySelectorAll('.nav-link').forEach(link => {
+  document.querySelectorAll('.nav-link').forEach((link) => {
     const href = link.getAttribute('href') || '';
     const isIndex = href.includes('index.html');
 
     if (currentPath === '/' || currentPath.includes('index.html')) {
       if (isIndex) link.classList.add('active');
-    } else if (href && !isIndex && currentPath.includes(href.split('/').pop())) {
+    } else if (
+      href &&
+      !isIndex &&
+      currentPath.includes(href.split('/').pop())
+    ) {
       link.classList.add('active');
     }
   });
 
   // ===== Hamburger toggle =====
-  const hamburger   = document.getElementById('nav-hamburger');
-  const mobileMenu  = document.getElementById('nav-mobile-menu');
-  const iconOpen    = document.getElementById('nav-icon-open');    // 3 garis
-  const iconClose   = document.getElementById('nav-icon-close');   // X
+  const hamburger = document.getElementById('nav-hamburger');
+  const mobileMenu = document.getElementById('nav-mobile-menu');
+  const iconOpen = document.getElementById('nav-icon-open'); // 3 garis
+  const iconClose = document.getElementById('nav-icon-close'); // X
 
   if (!hamburger || !mobileMenu) return;
 
@@ -57,7 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Tutup saat klik di luar navbar
   document.addEventListener('click', (e) => {
-    if (isOpen && !hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+    if (
+      isOpen &&
+      !hamburger.contains(e.target) &&
+      !mobileMenu.contains(e.target)
+    ) {
       closeMenu();
     }
   });

@@ -13,12 +13,20 @@ describe('Report audit integration', () => {
       .expect(200);
 
     // ensure a report row exists
-    const report = await db.getAsync(`SELECT id FROM reports WHERE period_start = ? AND period_end = ? LIMIT 1`, [periodStart, periodEnd]);
+    const report = await db.getAsync(
+      `SELECT id FROM reports WHERE period_start = ? AND period_end = ? LIMIT 1`,
+      [periodStart, periodEnd]
+    );
     expect(report).toBeDefined();
 
     // ensure audit row exists for that period
-    const audit = await db.getAsync(`SELECT action, details FROM report_audit WHERE period_start = ? AND period_end = ? ORDER BY created_at DESC LIMIT 1`, [periodStart, periodEnd]);
+    const audit = await db.getAsync(
+      `SELECT action, details FROM report_audit WHERE period_start = ? AND period_end = ? ORDER BY created_at DESC LIMIT 1`,
+      [periodStart, periodEnd]
+    );
     expect(audit).toBeDefined();
-    expect(['started','generated','skipped','failed']).toContain(audit.action);
+    expect(['started', 'generated', 'skipped', 'failed']).toContain(
+      audit.action
+    );
   });
 });

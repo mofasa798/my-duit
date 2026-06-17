@@ -6,7 +6,7 @@ services:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./monitoring/alerting/alert.rules.yml:/etc/prometheus/rules/alert.rules.yml:ro
     ports:
-      - "9090:9090"
+      - '9090:9090'
     restart: unless-stopped
 
   alertmanager:
@@ -14,15 +14,15 @@ services:
     volumes:
       - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     ports:
-      - "9093:9093"
+      - '9093:9093'
     command:
-      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
     restart: unless-stopped
 
   grafana:
     image: grafana/grafana:latest
     ports:
-      - "3001:3000"
+      - '3001:3000'
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:

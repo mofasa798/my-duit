@@ -8,20 +8,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRunMonthly = document.getElementById('btn-run-monthly');
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(amount);
   };
 
   const loadReports = async () => {
     try {
-      reportsContainer.innerHTML = '<div class="p-6 text-center text-slate-400">Loading reports...</div>';
+      reportsContainer.innerHTML =
+        '<div class="p-6 text-center text-slate-400">Loading reports...</div>';
       const response = await apiClient.getReports();
-      
+
       if (!response.data || response.data.length === 0) {
-        reportsContainer.innerHTML = '<div class="p-6 text-center text-slate-400">No reports generated yet.</div>';
+        reportsContainer.innerHTML =
+          '<div class="p-6 text-center text-slate-400">No reports generated yet.</div>';
         return;
       }
 
-      let html = '<table class="w-full text-left border-collapse text-sm whitespace-nowrap">';
+      let html =
+        '<table class="w-full text-left border-collapse text-sm whitespace-nowrap">';
       html += `
         <thead>
           <tr class="bg-slate-900/50 text-slate-300">
@@ -35,9 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
         </thead>
         <tbody>
       `;
-      
-      response.data.forEach(report => {
-        const periodStr = report.period_start && report.period_end ? `${report.period_start} to ${report.period_end}` : report.period_start;
+
+      response.data.forEach((report) => {
+        const periodStr =
+          report.period_start && report.period_end
+            ? `${report.period_start} to ${report.period_end}`
+            : report.period_start;
         html += `<tr class="border-b border-slate-700 hover:bg-slate-700/50 transition-colors">
           <td class="p-4 text-slate-300">${periodStr}</td>
           <td class="p-4 capitalize">
@@ -51,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="p-4 text-slate-400 text-xs">${new Date(report.generated_at).toLocaleString('id-ID')}</td>
         </tr>`;
       });
-      
+
       html += '</tbody></table>';
       reportsContainer.innerHTML = html;
     } catch (error) {
@@ -65,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = true;
       btn.innerHTML = `<span class="opacity-75">Running...</span>`;
       btn.classList.add('cursor-not-allowed', 'opacity-80');
-      
+
       const result = await apiCall();
       alert(`Success! Report generated successfully.`);
       loadReports();
@@ -81,17 +90,25 @@ document.addEventListener('DOMContentLoaded', () => {
   btnRunWeekly.addEventListener('click', () => {
     const periodStart = document.getElementById('weekly-start').value;
     const periodEnd = document.getElementById('weekly-end').value;
-    const data = (periodStart && periodEnd) ? { periodStart, periodEnd } : null;
-    
-    handleRunReport(btnRunWeekly, () => apiClient.runWeeklyReport(data), 'Run Weekly Report');
+    const data = periodStart && periodEnd ? { periodStart, periodEnd } : null;
+
+    handleRunReport(
+      btnRunWeekly,
+      () => apiClient.runWeeklyReport(data),
+      'Run Weekly Report'
+    );
   });
 
   btnRunMonthly.addEventListener('click', () => {
     const periodStart = document.getElementById('monthly-start').value;
     const periodEnd = document.getElementById('monthly-end').value;
-    const data = (periodStart && periodEnd) ? { periodStart, periodEnd } : null;
-    
-    handleRunReport(btnRunMonthly, () => apiClient.runMonthlyReport(data), 'Run Monthly Report');
+    const data = periodStart && periodEnd ? { periodStart, periodEnd } : null;
+
+    handleRunReport(
+      btnRunMonthly,
+      () => apiClient.runMonthlyReport(data),
+      'Run Monthly Report'
+    );
   });
 
   const btnExport = document.getElementById('btn-export-csv');

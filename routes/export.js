@@ -1,5 +1,8 @@
 const express = require('express');
-const { exportTransactions, exportReports } = require('../controllers/exportController');
+const {
+  exportTransactions,
+  exportReports,
+} = require('../controllers/exportController');
 
 const router = express.Router();
 

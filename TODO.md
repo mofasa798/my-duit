@@ -16,11 +16,6 @@
    - ✅ `npm test` lulus
 
 ## Dokumentasi
+
 - ✅ Update progress di `AI_CONTEXT.md`
 - ✅ Update bagian laporan di `README.md`
-
-
-
-
-
-

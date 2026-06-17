@@ -8,9 +8,9 @@ jest.mock('../../jobs/weeklyReport', () => ({
     totalIncome: 1000,
     totalExpense: 200,
     netSavings: 800,
-    topSpendingCategory: { name: 'Food', total: 200 }
+    topSpendingCategory: { name: 'Food', total: 200 },
   })),
-  scheduleWeekly: jest.fn()
+  scheduleWeekly: jest.fn(),
 }));
 
 const app = require('../../app');
@@ -32,7 +32,9 @@ describe('POST /api/reports/weekly/run (integration)', () => {
   });
 
   test('returns 400 when only one date is provided', async () => {
-    const res = await request(app).post('/api/reports/weekly/run').send({ periodStart: '2026-05-01' });
+    const res = await request(app)
+      .post('/api/reports/weekly/run')
+      .send({ periodStart: '2026-05-01' });
     expect(res.status).toBe(400);
     expect(res.body.success).toBe(false);
   });

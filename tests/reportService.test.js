@@ -12,14 +12,17 @@ jest.mock('../config/database', () => {
       }
       return Promise.resolve([]);
     }),
-    runAsync: jest.fn(() => Promise.resolve({ lastID: 1 }))
+    runAsync: jest.fn(() => Promise.resolve({ lastID: 1 })),
   };
 });
 const reportService = require('../services/reportService');
 
 describe('reportService.computeWeeklyReport', () => {
   test('computes totals and top category correctly', async () => {
-    const res = await reportService.computeWeeklyReport('2026-05-25', '2026-05-31');
+    const res = await reportService.computeWeeklyReport(
+      '2026-05-25',
+      '2026-05-31'
+    );
     expect(res.totalIncome).toBe(1000);
     expect(res.totalExpense).toBe(200);
     expect(res.netSavings).toBe(800);
@@ -33,7 +36,10 @@ describe('reportService.computeWeeklyReport', () => {
       if (sql.includes('GROUP BY')) return Promise.resolve([]);
       return Promise.resolve([{ total: 0 }]);
     });
-    const res = await reportService.computeWeeklyReport('2026-05-01', '2026-05-07');
+    const res = await reportService.computeWeeklyReport(
+      '2026-05-01',
+      '2026-05-07'
+    );
     expect(res.totalIncome).toBe(0);
     expect(res.totalExpense).toBe(0);
     expect(res.netSavings).toBe(0);

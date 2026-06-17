@@ -46,8 +46,13 @@ const createTransaction = async (req, res, next) => {
       },
     });
   } catch (error) {
-    if (error.message && error.message.includes('FOREIGN KEY constraint failed')) {
-      return res.status(400).json({ success: false, message: 'Invalid category_id' });
+    if (
+      error.message &&
+      error.message.includes('FOREIGN KEY constraint failed')
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Invalid category_id' });
     }
     next(error);
   }
@@ -67,7 +72,9 @@ const updateTransaction = async (req, res, next) => {
 
     const existing = await transactionService.getTransactionById(id);
     if (!existing) {
-      return res.status(404).json({ success: false, message: 'Transaction not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Transaction not found' });
     }
 
     const result = await transactionService.updateTransaction(id, {
@@ -78,13 +85,29 @@ const updateTransaction = async (req, res, next) => {
     });
 
     if (result.changes === 0) {
-      return res.status(400).json({ success: false, message: 'No transaction was updated' });
+      return res
+        .status(400)
+        .json({ success: false, message: 'No transaction was updated' });
     }
 
-    res.json({ success: true, data: { id: Number(id), category_id, amount, description: description || '', transaction_date } });
+    res.json({
+      success: true,
+      data: {
+        id: Number(id),
+        category_id,
+        amount,
+        description: description || '',
+        transaction_date,
+      },
+    });
   } catch (error) {
-    if (error.message && error.message.includes('FOREIGN KEY constraint failed')) {
-      return res.status(400).json({ success: false, message: 'Invalid category_id' });
+    if (
+      error.message &&
+      error.message.includes('FOREIGN KEY constraint failed')
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Invalid category_id' });
     }
     next(error);
   }
@@ -95,7 +118,9 @@ const deleteTransaction = async (req, res, next) => {
     const { id } = req.params;
     const existing = await transactionService.getTransactionById(id);
     if (!existing) {
-      return res.status(404).json({ success: false, message: 'Transaction not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Transaction not found' });
     }
 
     await transactionService.deleteTransaction(id);

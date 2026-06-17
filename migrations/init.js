@@ -1,13 +1,13 @@
 /**
  * migrations/init.js
- * 
+ *
  * Initialize database schema
- * 
+ *
  * Membuat tabel-tabel:
  * 1. categories - kategori transaksi
  * 2. transactions - data transaksi
  * 3. reports - laporan yang di-generate
- * 
+ *
  * Jalankan dengan: npm run init:db
  */
 
@@ -82,7 +82,9 @@ const createTables = () => {
 
     db.exec(sql, (err) => {
       if (err) return reject(err);
-      console.log('✓ Created tables (categories, transactions, reports, report_audit, locks)');
+      console.log(
+        '✓ Created tables (categories, transactions, reports, report_audit, locks)'
+      );
       resolve();
     });
   });
@@ -92,7 +94,6 @@ const createTables = () => {
 
 const seedData = () => {
   return new Promise((resolve, reject) => {
-    
     // Insert default categories
     const categories = [
       { name: 'Food', type: 'expense' },
@@ -100,7 +101,7 @@ const seedData = () => {
       { name: 'Shopping', type: 'expense' },
       { name: 'Salary', type: 'income' },
       { name: 'Investment', type: 'income' },
-      { name: 'Others', type: 'expense' }
+      { name: 'Others', type: 'expense' },
     ];
 
     let inserted = 0;
@@ -127,24 +128,27 @@ const seedData = () => {
 const init = async () => {
   try {
     console.log('\n🔧 Initializing database...\n');
-    
+
     await createTables();
     await seedData();
-    
+
     console.log('\n✅ Database initialization complete!\n');
-    
+
     // Show created tables
-    db.all(`SELECT name FROM sqlite_master WHERE type='table'`, (err, tables) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log('Tables in database:');
-        tables.forEach(t => console.log(`  - ${t.name}`));
+    db.all(
+      `SELECT name FROM sqlite_master WHERE type='table'`,
+      (err, tables) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('Tables in database:');
+          tables.forEach((t) => console.log(`  - ${t.name}`));
+        }
+
+        db.close();
+        process.exit(0);
       }
-      
-      db.close();
-      process.exit(0);
-    });
+    );
   } catch (err) {
     console.error('❌ Error during initialization:', err);
     db.close();

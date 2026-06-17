@@ -29,7 +29,9 @@ const buildFilterQuery = (filters) => {
     values.push(`%${filters.search}%`, `%${filters.search}%`);
   }
 
-  const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const whereClause = conditions.length
+    ? `WHERE ${conditions.join(' AND ')}`
+    : '';
   return { whereClause, values };
 };
 
@@ -63,7 +65,12 @@ const getTransactionById = async (id) => {
   );
 };
 
-const createTransaction = async ({ category_id, amount, description, transaction_date }) => {
+const createTransaction = async ({
+  category_id,
+  amount,
+  description,
+  transaction_date,
+}) => {
   return runAsync(
     `INSERT INTO transactions (category_id, amount, description, transaction_date)
      VALUES (?, ?, ?, ?)`,
@@ -71,7 +78,10 @@ const createTransaction = async ({ category_id, amount, description, transaction
   );
 };
 
-const updateTransaction = async (id, { category_id, amount, description, transaction_date }) => {
+const updateTransaction = async (
+  id,
+  { category_id, amount, description, transaction_date }
+) => {
   return runAsync(
     `UPDATE transactions
      SET category_id = ?, amount = ?, description = ?, transaction_date = ?, updated_at = CURRENT_TIMESTAMP
