@@ -293,11 +293,10 @@ Semua halaman (`index`, `transactions`, `categories`, `reports`) sudah responsiv
 
 ## Status & Progress
 
-- Phase 1–8: **DONE**
-- Phase 9 (Testing & debugging): next
-- Phase 10 (Portfolio preparation): planned
+- Phase 1–9: **DONE**
+- Phase 10 (Portfolio preparation): next
 
-Commit terakhir: `f4bb845 feat(ui): add hamburger menu to categories & reports pages`.
+Commit terakhir: `014a9af test: implement API integration tests (fixes #1)`.
 
 ## Catatan
 
