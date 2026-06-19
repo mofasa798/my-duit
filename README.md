@@ -1,339 +1,501 @@
 # My Duit - Personal Finance Dashboard
 
-Aplikasi Personal Finance Dashboard untuk belajar backend engineering, REST API, database design, dan frontend sederhana.
+Aplikasi **Personal Finance Dashboard** adalah sebuah sistem pengelolaan keuangan pribadi yang dirancang untuk mencatat transaksi keuangan (pemasukan dan pengeluaran), memvisualisasikan ringkasan arus kas, memantau data dalam bentuk laporan periodik (mingguan dan bulanan), melakukan ekspor data secara native ke format CSV, serta mencetak laporan fisik.
 
-## Deskripsi
+Aplikasi ini dibangun untuk mendemonstrasikan praktik terbaik (*best practices*) dalam backend engineering menggunakan Node.js/Express, perancangan database relasional SQLite, struktur kode modular berbasis layanan (*service-oriented*), otomasi latar belakang dengan cron job, serta integrasi pemantauan (*monitoring*) berbasis Prometheus dan Grafana.
 
-My Duit adalah aplikasi yang membantu pengguna mencatat transaksi keuangan, melihat ringkasan arus kas, dan mempersiapkan fitur laporan dan export. Aplikasi ini dibangun dengan:
+---
 
-- Backend: Node.js, Express.js
-- Database: SQLite
-- Frontend: HTML, TailwindCSS, Vanilla JavaScript
-- Automation: node-cron (future enhancement)
+## 🛠️ Tech Stack & Library yang Digunakan
 
-## Demo & Screenshots
+Aplikasi ini dibangun menggunakan tumpukan teknologi modern, efisien, dan tangguh:
 
-![Dashboard Screenshot](https://via.placeholder.com/800x400?text=Dashboard+Screenshot)
-*(Screenshot placeholder - akan diisi dengan gambar asli nanti)*
+### 1. Core Stack
+*   **Backend:** Node.js (v18+) & Express.js (v4.18+)
+*   **Database:** SQLite 3 (menggunakan driver `sqlite3` v5.1+)
+*   **Frontend:** HTML5, Vanilla JavaScript, CSS3
+*   **Styling & UI:** Tailwind CSS v4 (dikompilasi melalui Tailwind CLI resmi)
+*   **Containerization & Monitoring:** Docker, Docker Compose, Prometheus, Grafana, Alertmanager
 
-## Fitur Saat Ini
+### 2. Library & Dependencies
+*   `dotenv` (`^16.0.3`): Digunakan untuk memuat variabel lingkungan dari file `.env`.
+*   `express` (`^4.18.2`): Framework web minimalis untuk routing dan middleware API HTTP.
+*   `sqlite3` (`^5.1.6`): Driver database SQLite untuk penyimpanan relasional berbasis file.
+*   `node-cron` (`^3.0.2`): Scheduler untuk menjalankan laporan otomatis (mingguan/bulanan) di latar belakang.
+*   `pino` (`^8.14.0`) & `pino-pretty` (`^9.2.0`): Logger berkinerja tinggi untuk log terstruktur dan mudah dibaca di terminal.
+*   `prom-client` (`^14.0.0`): Library instrumentasi Prometheus untuk memantau metrik performa aplikasi dan bisnis.
+*   `concurrently` (`^10.0.3`): Menjalankan beberapa proses secara paralel saat development (misal: watch CSS & start server).
+*   `nodemon` (`^2.0.20`): Utilitas development untuk melakukan restart server otomatis ketika terjadi perubahan file.
+*   `jest` (`^29.6.1`): Framework pengujian unit dan integrasi JavaScript.
+*   `supertest` (`^6.3.3`): Library untuk menguji endpoint HTTP Express secara programatis tanpa perlu menjalankan server secara manual.
+*   `eslint` (`^10.5.0`) & `prettier` (`^3.8.4`): Perkakas untuk menjaga konsistensi gaya penulisan kode (*linting* dan *code formatting*).
 
-- Dashboard sederhana dengan ringkasan total income, total expense, dan saldo
-- CRUD kategori transaksi
-- CRUD transaksi
-- Struktur aplikasi modular dengan routes, controllers, services, dan database helper
-- Database schema untuk categories, transactions, dan reports
-- Frontend CRUD UI untuk `categories` dan `transactions` (pages: `/html/categories.html`, `/html/transactions.html`)
-- Frontend UI untuk Laporan Mingguan & Bulanan (page: `/html/reports.html`) dengan dukungan periode kustom
-- Fitur Export ke CSV secara native untuk transaksi dan laporan
-- Fitur Print Preview dengan layout khusus yang dioptimalkan untuk cetak (`/html/print.html`)
-- Optimized Frontend Build dengan kompilasi murni TailwindCSS v4 CLI
+---
 
-## Struktur Proyek
+## 📂 Arsitektur Folder & Penamaan File
 
-```
+Aplikasi ini mengadopsi pola arsitektur **modular berlapis** yang memisahkan tanggung jawab secara jelas (Separation of Concerns).
+
+### 1. Struktur Folder
+
+```text
 my-duit/
-├── config/
-│   └── database.js
-├── controllers/
-│   ├── categoryController.js
-│   ├── dashboardController.js
-│   ├── transactionController.js
-│   └── exportController.js
-├── jobs/
-├── migrations/
-│   └── init.js
-├── middleware/
-├── src/
-│   └── css/
-│       └── main.css
-├── public/
-│   ├── html/
-│   │   ├── index.html
-│   │   ├── categories.html
-│   │   ├── transactions.html
-│   │   ├── reports.html
-│   │   └── print.html
-│   ├── js/
-│   │   ├── api-client.js
-│   │   ├── categories.js
-│   │   ├── dashboard.js
-│   │   ├── transactions.js
-│   │   ├── reports.js
-│   │   └── print.js
-│   └── css/
-├── routes/
-│   ├── categories.js
-│   ├── dashboard.js
-│   ├── transactions.js
-│   └── export.js
-├── services/
-│   ├── categoryService.js
-│   ├── dashboardService.js
-│   ├── transactionService.js
-│   └── exportService.js
-├── app.js
-├── server.js
-├── package.json
-├── .env.example
-├── .gitignore
-└── README.md
+├── config/              # Konfigurasi aplikasi dan database helper
+├── controllers/         # Handler HTTP request/response & ekstraksi parameter
+├── jobs/                # Pekerjaan latar belakang (cron jobs / scheduler)
+├── middleware/          # Middleware Express (misal: validasi input request)
+├── migrations/          # Script untuk migrasi/inisialisasi skema database
+├── monitoring/          # Konfigurasi instrumen monitoring (Prometheus, Grafana, Alertmanager)
+│   ├── alerting/
+│   ├── alertmanager/
+│   └── grafana/
+├── public/              # File statis yang diakses langsung oleh client (Frontend)
+│   ├── css/             # CSS hasil kompilasi Tailwind
+│   ├── html/            # Halaman web HTML
+│   └── js/              # Logika JavaScript client-side (koneksi API, manipulasi DOM)
+├── routes/              # Definisi rute/endpoint HTTP API
+├── scripts/             # Script utilitas (testing manual, seed data, run manual jobs)
+├── services/            # Inti logika bisnis (business logic) dan interaksi database
+├── src/                 # Source code aset mentah (file CSS Tailwind mentah)
+├── tests/               # Berisi semua berkas pengujian (unit & integration tests)
+│   ├── integration/     # Tes integrasi API menggunakan Supertest
+│   └── unit/            # Tes unit logika internal aplikasi
+└── utils/               # Utilitas pembantu (helper, logger, metrics)
 ```
 
-## Application Architecture
+### 2. Aturan Penamaan File (File Naming Conventions)
 
-Aplikasi ini menggunakan pola arsitektur modular yang rapi:
-- **Frontend (Client)**: Menggunakan HTML, Vanilla JavaScript, dan TailwindCSS v4. Menangani manipulasi DOM dan memanggil API (berada di \`/public\`).
-- **Routes**: Mendefinisikan endpoint API dan memetakan request ke controller (\`/routes\`).
-- **Controllers**: Menangani ekstraksi request HTTP dan pengiriman response JSON, lalu memanggil layer service (\`/controllers\`).
-- **Services**: Menyimpan inti *business logic* dan interaksi database, membuat kode sangat mudah di-test (\`/services\`).
-- **Database Helper**: Membungkus driver SQLite dengan *promises* agar bisa menggunakan `async/await` (\`/config/database.js\`).
+*   **Rute / Routes:** Menggunakan huruf kecil jamak sesuai nama entitas (misal: `categories.js`, `transactions.js`, `reports.js`).
+*   **Pengendali / Controllers:** Menggunakan camelCase berakhiran kata `Controller.js` (misal: `categoryController.js`, `transactionController.js`).
+*   **Layanan / Services:** Menggunakan camelCase berakhiran kata `Service.js` (misal: `categoryService.js`, `transactionService.js`).
+*   **Pekerjaan Latar Belakang / Jobs:** Menggunakan camelCase sesuai nama job (misal: `weeklyReport.js`, `monthlyReport.js`).
+*   **Pengujian / Tests:** Menggunakan nama modul berakhiran `.test.js` (misal: `reportService.test.js` untuk unit test, `categories.test.js` untuk integration test).
+*   **Frontend HTML & JS:** Halaman HTML dan JavaScript di dalam folder `public` dinamai selaras (misal: `/public/html/transactions.html` dipasangkan dengan `/public/js/transactions.js`).
 
-## Setup
+---
 
-1. Clone repository atau salin folder ke lokal.
-2. Pastikan Node.js dan npm sudah terinstall.
-3. Install dependency:
+## 🗄️ Skema Database (SQLite)
 
+Database menggunakan model relasional yang disimpan dalam file tunggal SQLite (`finance.db`). Relasi antar tabel dikelola dengan *foreign keys* (diaktifkan lewat perintah `PRAGMA foreign_keys = ON`).
+
+```mermaid
+erDiagram
+    categories ||--o{ transactions : "has many"
+    reports ||--o{ report_audit : "audited by"
+    
+    categories {
+        INTEGER id PK
+        TEXT name UNIQUE
+        TEXT type "income | expense"
+        TIMESTAMP created_at
+    }
+
+    transactions {
+        INTEGER id PK
+        INTEGER category_id FK
+        DECIMAL amount
+        TEXT description
+        DATE transaction_date
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    reports {
+        INTEGER id PK
+        TEXT report_type "weekly | monthly"
+        DATE period_start
+        DATE period_end
+        DECIMAL total_income
+        DECIMAL total_expense
+        DECIMAL net_savings
+        TIMESTAMP generated_at
+    }
+
+    report_audit {
+        INTEGER id PK
+        INTEGER report_id FK
+        TEXT action
+        DATE period_start
+        DATE period_end
+        TEXT details
+        TIMESTAMP created_at
+    }
+
+    locks {
+        TEXT name PK
+        TEXT owner
+        TIMESTAMP expires_at
+    }
+```
+
+### Detail Tabel
+
+#### 1. Tabel `categories`
+Menyimpan daftar kategori transaksi keuangan.
+*   `id` (INTEGER, PRIMARY KEY, AUTOINCREMENT): ID unik kategori.
+*   `name` (TEXT, NOT NULL, UNIQUE): Nama kategori (contoh: *Food, Salary, Shopping*).
+*   `type` (TEXT, NOT NULL): Jenis kategori. Memiliki batasan cek (`CHECK`) bernilai `'income'` (pemasukan) atau `'expense'` (pengeluaran).
+*   `created_at` (TIMESTAMP, DEFAULT `CURRENT_TIMESTAMP`): Waktu pembuatan data.
+
+#### 2. Tabel `transactions`
+Menyimpan detail transaksi pemasukan dan pengeluaran harian.
+*   `id` (INTEGER, PRIMARY KEY, AUTOINCREMENT): ID unik transaksi.
+*   `category_id` (INTEGER, NOT NULL): Referensi ke tabel `categories(id)`. Memiliki batasan `ON DELETE RESTRICT` agar kategori yang memiliki transaksi tidak dapat dihapus.
+*   `amount` (DECIMAL(10, 2), NOT NULL): Nominal transaksi. Memiliki batasan cek `CHECK(amount > 0)`.
+*   `description` (TEXT): Keterangan opsional mengenai transaksi.
+*   `transaction_date` (DATE, NOT NULL): Tanggal terjadinya transaksi (format: `YYYY-MM-DD`).
+*   `created_at` / `updated_at` (TIMESTAMP, DEFAULT `CURRENT_TIMESTAMP`): Waktu pencatatan dan pembaruan data.
+
+#### 3. Tabel `reports`
+Menyimpan ringkasan laporan periodik yang di-generate otomatis oleh scheduler atau manual.
+*   `id` (INTEGER, PRIMARY KEY, AUTOINCREMENT): ID unik laporan.
+*   `report_type` (TEXT, NOT NULL): Jenis laporan. Berisi `'weekly'` (mingguan) atau `'monthly'` (bulanan).
+*   `period_start` (DATE, NOT NULL): Tanggal mulai periode laporan.
+*   `period_end` (DATE, NOT NULL): Tanggal akhir periode laporan.
+*   `total_income` (DECIMAL(10, 2)): Total pemasukan dalam rentang periode tersebut.
+*   `total_expense` (DECIMAL(10, 2)): Total pengeluaran dalam rentang periode tersebut.
+*   `net_savings` (DECIMAL(10, 2)): Selisih bersih (`total_income - total_expense`).
+*   `generated_at` (TIMESTAMP, DEFAULT `CURRENT_TIMESTAMP`): Waktu laporan dibuat.
+
+#### 4. Tabel `report_audit`
+Mencatat riwayat aktivitas pemrosesan laporan (audit log) untuk pelacakan kendala atau tindakan operasional.
+*   `id` (INTEGER, PRIMARY KEY, AUTOINCREMENT): ID unik log audit.
+*   `report_id` (INTEGER, NULLABLE): Referensi ke tabel `reports(id)` dengan batasan `ON DELETE SET NULL`.
+*   `action` (TEXT, NOT NULL): Jenis tindakan (contoh: `WEEKLY_JOB_START`, `WEEKLY_JOB_SUCCESS`, `WEEKLY_JOB_FAILED`).
+*   `period_start` / `period_end` (DATE): Rentang periode laporan terkait.
+*   `details` (TEXT): Pesan detail, stack trace kegagalan, atau info jumlah percobaan retries.
+*   `created_at` (TIMESTAMP, DEFAULT `CURRENT_TIMESTAMP`): Waktu log dicatat.
+
+#### 5. Tabel `locks`
+Digunakan untuk implementasi *Distributed Locking* guna menghindari duplikasi eksekusi job jika aplikasi dijalankan pada multi-instance (skala horizontal).
+*   `name` (TEXT, PRIMARY KEY): Nama kunci lock (contoh: `weekly_report_job`).
+*   `owner` (TEXT): ID atau pengenal proses yang memegang lock saat ini.
+*   `expires_at` (TIMESTAMP): Batas waktu masa berlaku lock (TTL) agar menghindari *deadlock* jika server crash.
+
+---
+
+## 📡 API Endpoint (API yang Tersedia)
+
+Setiap endpoint mengembalikan respons berupa format JSON dengan pola seragam: `{ success: true/false, data: ... }` atau `{ success: false, message: ... }`.
+
+### 1. Kategori / Categories API (`/api/categories`)
+
+*   **`GET /api/categories`**
+    *   **Deskripsi:** Mengambil semua daftar kategori yang ada.
+    *   **Respons (200 OK):**
+        ```json
+        {
+          "success": true,
+          "data": [
+            { "id": 1, "name": "Food", "type": "expense", "created_at": "2026-06-19 06:11:32" }
+          ]
+        }
+        ```
+
+*   **`POST /api/categories`**
+    *   **Deskripsi:** Membuat kategori baru.
+    *   **Body (JSON):**
+        ```json
+        {
+          "name": "Salary",
+          "type": "income"
+        }
+        ```
+    *   **Respons (201 Created):**
+        ```json
+        {
+          "success": true,
+          "data": { "id": 4, "name": "Salary", "type": "income" }
+        }
+        ```
+
+*   **`PUT /api/categories/:id`**
+    *   **Deskripsi:** Memperbarui data kategori berdasarkan ID.
+    *   **Body (JSON):**
+        ```json
+        {
+          "name": "Food & Beverage",
+          "type": "expense"
+        }
+        ```
+    *   **Respons (200 OK):**
+        ```json
+        {
+          "success": true,
+          "data": { "id": 1, "name": "Food & Beverage", "type": "expense" }
+        }
+        ```
+
+*   **`DELETE /api/categories/:id`**
+    *   **Deskripsi:** Menghapus kategori berdasarkan ID. Tidak bisa dihapus jika ID kategori sedang digunakan oleh transaksi keuangan mana pun.
+    *   **Respons (200 OK):**
+        ```json
+        {
+          "success": true,
+          "message": "Category deleted successfully"
+        }
+        ```
+
+### 2. Transaksi / Transactions API (`/api/transactions`)
+
+*   **`GET /api/transactions`**
+    *   **Deskripsi:** Mengambil daftar transaksi keuangan. Mendukung filter pencarian melalui Query Parameters.
+    *   **Query Parameters:**
+        *   `category_id` (opsional): Menyaring berdasarkan ID kategori tertentu.
+        *   `type` (opsional): Menyaring tipe transaksi (`income` / `expense`).
+        *   `date_from` (opsional): Menyaring transaksi dari tanggal (`YYYY-MM-DD`).
+        *   `date_to` (opsional): Menyaring transaksi sampai tanggal (`YYYY-MM-DD`).
+        *   `search` (opsional): Melakukan pencarian teks di deskripsi transaksi.
+    *   **Respons (200 OK):**
+        ```json
+        {
+          "success": true,
+          "data": [
+            {
+              "id": 1,
+              "category_id": 1,
+              "category_name": "Food",
+              "amount": 25000.00,
+              "description": "Lunch at canteen",
+              "transaction_date": "2026-06-19",
+              "created_at": "..."
+            }
+          ]
+        }
+        ```
+
+*   **`POST /api/transactions`**
+    *   **Deskripsi:** Mencatat transaksi keuangan baru.
+    *   **Body (JSON):**
+        ```json
+        {
+          "category_id": 1,
+          "amount": 50000.00,
+          "description": "Weekly grocery",
+          "transaction_date": "2026-06-19"
+        }
+        ```
+    *   **Respons (201 Created):**
+        ```json
+        {
+          "success": true,
+          "data": { "id": 2, "category_id": 1, "amount": 50000.00, "description": "Weekly grocery", "transaction_date": "2026-06-19" }
+        }
+        ```
+
+*   **`PUT /api/transactions/:id`**
+    *   **Deskripsi:** Memperbarui data transaksi berdasarkan ID.
+    *   **Body (JSON):** Sama seperti request POST.
+    *   **Respons (200 OK):**
+        ```json
+        {
+          "success": true,
+          "data": { "id": 2, "category_id": 1, "amount": 55000.00, "description": "Weekly grocery updated", "transaction_date": "2026-06-19" }
+        }
+        ```
+
+*   **`DELETE /api/transactions/:id`**
+    *   **Deskripsi:** Menghapus data transaksi berdasarkan ID.
+    *   **Respons (200 OK):**
+        ```json
+        {
+          "success": true,
+          "message": "Transaction deleted successfully"
+        }
+        ```
+
+### 3. Dashboard API (`/api/dashboard`)
+
+*   **`GET /api/dashboard`**
+    *   **Deskripsi:** Mengambil metrik total pemasukan, total pengeluaran, saldo bersih saat ini, serta ringkasan tren.
+    *   **Respons (200 OK):**
+        ```json
+        {
+          "success": true,
+          "data": {
+            "totalIncome": 5000000.00,
+            "totalExpense": 1200000.00,
+            "netBalance": 3800000.00
+          }
+        }
+        ```
+
+### 4. Laporan / Reports API (`/api/reports`)
+
+*   **`GET /api/reports`**
+    *   **Deskripsi:** Mengambil semua riwayat laporan mingguan dan bulanan yang telah dibuat.
+    *   **Respons (200 OK):**
+        ```json
+        {
+          "success": true,
+          "data": [
+            { "id": 1, "report_type": "weekly", "period_start": "2026-06-01", "period_end": "2026-06-07", "total_income": 1000000.00, "total_expense": 400000.00, "net_savings": 600000.00, "generated_at": "..." }
+          ]
+        }
+        ```
+
+*   **`POST /api/reports/weekly/run`**
+    *   **Deskripsi:** Menjalankan pemrosesan laporan mingguan secara manual.
+    *   **Body (JSON - Opsional):** Jika kosong, sistem menggunakan rentang seminggu yang lalu secara otomatis.
+        ```json
+        {
+          "periodStart": "2026-06-01",
+          "periodEnd": "2026-06-07"
+        }
+        ```
+    *   **Respons (200 OK):** Mengembalikan data objek laporan yang berhasil dibuat.
+
+*   **`POST /api/reports/monthly/run`**
+    *   **Deskripsi:** Menjalankan pemrosesan laporan bulanan secara manual.
+    *   **Body (JSON - Opsional):** Jika kosong, sistem menggunakan rentang sebulan yang lalu secara otomatis.
+        ```json
+        {
+          "periodStart": "2026-05-01",
+          "periodEnd": "2026-05-31"
+        }
+        ```
+    *   **Respons (200 OK):** Mengembalikan data objek laporan bulanan yang berhasil dibuat.
+
+### 5. Ekspor Data / Export API (`/api/export`)
+
+*   **`GET /api/export/transactions/csv`**
+    *   **Deskripsi:** Mengunduh semua riwayat transaksi dalam format CSV secara langsung.
+    *   **Header Respons:** `Content-Type: text/csv`, `Content-Disposition: attachment; filename=transactions.csv`.
+
+*   **`GET /api/export/reports/csv`**
+    *   **Deskripsi:** Mengunduh semua riwayat laporan ringkasan dalam format CSV.
+    *   **Header Respons:** `Content-Type: text/csv`, `Content-Disposition: attachment; filename=reports.csv`.
+
+### 6. Health & Metrik API
+
+*   **`GET /api/health`**
+    *   **Deskripsi:** Memeriksa status kesehatan server aplikasi.
+    *   **Respons (200 OK):** `{ "status": "OK", "timestamp": "...", "environment": "development" }`
+
+*   **`GET /api/health/job`**
+    *   **Deskripsi:** Memeriksa status keberhasilan eksekusi job scheduler (audit terakhir & laporan terakhir).
+
+*   **`GET /metrics`**
+    *   **Deskripsi:** Menyediakan data metrik berformat Prometheus untuk proses scraping data metrik (seperti: `reports_weekly_generated_total`).
+
+---
+
+## 🚀 Panduan Setup Project
+
+Ikuti langkah-langkah berikut untuk menyiapkan aplikasi di lingkungan lokal Anda:
+
+### 1. Prasyarat (Prerequisites)
+Pastikan sistem komputer Anda sudah menginstal:
+*   [Node.js](https://nodejs.org/) (Sangat disarankan versi LTS 18 atau lebih baru)
+*   NPM (biasanya otomatis terinstal bersama Node.js)
+*   *Opsional:* [Docker](https://www.docker.com/) jika ingin menjalankan monitoring stack (Prometheus & Grafana) secara instan.
+
+### 2. Instalasi Dependency
+Buka terminal pada direktori root proyek `my-duit`, kemudian jalankan perintah:
 ```bash
 npm install
 ```
 
-4. Lakukan build CSS awal untuk memastikan styles.css ter-generate:
+### 3. Konfigurasi Environment Variables
+Salin contoh konfigurasi dari berkas `.env.example` ke file baru bernama `.env`:
+*   Di sistem Windows (PowerShell):
+    ```powershell
+    Copy-Item .env.example .env
+    ```
+*   Di sistem Windows (CMD):
+    ```cmd
+    copy .env.example .env
+    ```
 
+Isi variabel di `.env` sesuai kebutuhan. Contoh bawaan:
+```ini
+PORT=3000
+DATABASE_PATH=./finance.db
+NODE_ENV=development
+SCHEDULER_LOCK_TTL_MS=600000
+```
+
+### 4. Build Aset CSS (Tailwind)
+Lakukan kompilasi Tailwind CSS mentah menjadi file style CSS siap saji:
 ```bash
 npm run build:css
 ```
 
-5. Salin file `.env.example` menjadi `.env` jika diperlukan.
-
-6. Inisialisasi database:
-
+### 5. Inisialisasi Skema Database
+Untuk menyiapkan database SQLite pertama kali dan menyisipkan data kategori default (*seeding*):
 ```bash
 npm run init:db
 ```
+*Catatan: Sistem juga memiliki fitur auto-initialization pada startup, jika mendeteksi file `finance.db` belum tersedia saat aplikasi mulai berjalan, sistem akan membuatnya secara otomatis.*
 
-7. Jalankan server untuk development (mengaktifkan live-reload CSS dan API):
+---
 
+## 🏃 Cara Menjalankan Aplikasi
+
+Aplikasi mendukung mode pengembangan dan mode produksi, serta pengoperasian infrastruktur metrik.
+
+### 1. Mode Pengembangan (Development Mode)
+Menjalankan server menggunakan `nodemon` untuk restart otomatis ketika kode JavaScript berubah, serta menyalakan Tailwind CSS CLI mode `--watch` untuk mengompilasi ulang CSS secara *realtime*:
 ```bash
 npm run dev
 ```
+Buka browser Anda dan akses aplikasi melalui tautan:
+*   Dashboard utama: `http://localhost:3000`
+*   Pengelolaan Kategori: `http://localhost:3000/html/categories.html`
+*   Pencatatan Transaksi: `http://localhost:3000/html/transactions.html`
+*   Laporan Ringkasan: `http://localhost:3000/html/reports.html`
 
-8. Buka browser dan akses:
-
-```
-http://localhost:3000
-```
-
-Untuk mengakses UI CRUD yang sudah tersedia langsung:
-
-```
-http://localhost:3000/html/categories.html
-http://localhost:3000/html/transactions.html
+### 2. Mode Produksi (Production Mode)
+Untuk menjalankan aplikasi dengan performa maksimal tanpa pemantau file lokal (nodemon/watch):
+```bash
+npm start
 ```
 
-## Deployment Guide (Render / Railway / Fly.io)
+### 3. Menjalankan Monitoring Stack (Docker Compose)
+Jika Anda ingin melihat pemantauan visual metrik (Grafana Dashboard & Prometheus):
+1.  Pastikan Docker service sudah aktif.
+2.  Jalankan stack monitoring dengan perintah:
+    ```bash
+    docker-compose up -d
+    ```
+3.  Akses layanan:
+    *   **Prometheus UI:** `http://localhost:9090` (melihat data metrik mentah dan status alert)
+    *   **Grafana Dashboard:** `http://localhost:3001` (login default `admin` / `admin`). Halaman dashboard *Weekly Reports Overview* sudah terkonfigurasi secara otomatis via mekanisme auto-provisioning.
+    *   **Alertmanager:** `http://localhost:9093` (meninjau notifikasi sistem/kegagalan job).
 
-Aplikasi ini dioptimalkan untuk mudah di-deploy di platform cloud (PaaS):
-1. Buat proyek/Web Service baru di cloud provider pilihan Anda.
-2. Hubungkan repositori GitHub ini.
-3. **Build Command**: `npm install && npm run build:css`
-4. **Start Command**: `npm start`
-5. *Catatan Penting*: Karena menggunakan SQLite, pastikan Anda melakukan **mount persistent volume** di direktori kerja aplikasi agar file `finance.db` tidak terhapus setiap kali server direstart oleh cloud provider. Database akan di-generate otomatis saat pertama kali berjalan.
+---
 
-## Endpoint API
+## 🧪 Cara Mengetes Aplikasi
 
-- `GET /api/health`
-- `GET /api/categories`
-- `POST /api/categories`
-- `PUT /api/categories/:id`
-- `DELETE /api/categories/:id`
-- `GET /api/transactions`
-- `POST /api/transactions`
-- `PUT /api/transactions/:id`
-- `DELETE /api/transactions/:id`
-- `GET /api/dashboard`
-- `GET /api/export/transactions/csv`
-- `GET /api/export/reports/csv`
+Sistem memiliki rangkaian pengujian yang komprehensif untuk memastikan reliabilitas logika bisnis dan kestabilan API.
 
-## Testing
+### 1. Uji Coba Unit & Integrasi Otomatis (Jest & Supertest)
+Pengujian ini memverifikasi kebenaran internal logika servis (misal: *Distributed Lock TTL* dan *Report Service*) serta integrasi API HTTP. Pengujian ini menggunakan database khusus pengujian agar tidak merusak data utama Anda.
 
-Aplikasi sudah menyediakan script API test untuk memverifikasi endpoint penting secara otomatis.
+Untuk menjalankan seluruh test suite:
+```bash
+npm test
+```
+*Atau:*
+```bash
+npm run test
+```
 
-Jalankan:
+### 2. Uji Coba Integrasi API Langsung (Custom API Script)
+Tersedia skrip pengujian kustom yang secara mandiri akan menghidupkan server sementara pada port khusus, mengirimkan serangkaian request HTTP nyata (Health, CRUD Categories, CRUD Transactions, Dashboard), memeriksa responsnya, lalu mematikan server kembali secara otomatis.
 
+Untuk menjalankan uji coba ini:
 ```bash
 npm run test:api
 ```
 
-Script ini akan:
-
-- Menjalankan server secara sementara
-- Memanggil `/api/health`
-- Menguji CRUD kategori
-- Menguji CRUD transaksi
-- Menguji endpoint dashboard
-- Menjalankan unit tests (Jest) dan integration tests (Supertest) untuk endpoint kritis
-
-Catatan: Automated API tests telah dijalankan dan lulus selama pengembangan.
-
-## Weekly & Monthly Reports (Phase 6)
-
-Server menyediakan job mingguan dan bulanan yang akan menghasilkan laporan mingguan (setiap Minggu) dan laporan bulanan (setiap tanggal 1).
-
-Untuk men-trigger laporan secara manual (testing), jalankan:
-
-```bash
-npm run run:weekly
-```
-
-Endpoint untuk laporan:
-
-- `GET /api/reports` -> daftar laporan
-- `POST /api/reports/weekly/run` -> trigger manual pembuatan laporan mingguan
-
-Penjadwalan:
-
-- Cron expression: `5 0 * * 0` (Setiap Minggu pukul 00:05) menggunakan `node-cron`.
-
-Untuk laporan bulanan, penjadwalan menggunakan cron:
-
-- Cron expression: `10 0 1 * *` (Setiap tanggal 1 pukul 00:10)
-
-Catatan: Job telah diuji dengan `npm run run:weekly` dan hasil laporan disimpan di tabel `reports`.
-
-Request Body (opsional)
-
-- Endpoint `POST /api/reports/weekly/run` menerima body JSON opsional untuk menentukan periode khusus:
-  - `periodStart`: tanggal mulai dalam format `YYYY-MM-DD`
-  - `periodEnd`: tanggal akhir dalam format `YYYY-MM-DD`
-
-Contoh body:
-
-```json
-{
-  "periodStart": "2026-05-25",
-  "periodEnd": "2026-05-31"
-}
-```
-
-Validasi:
-
-- Jika salah satu dari `periodStart` atau `periodEnd` diberikan, maka keduanya wajib.
-- Format tanggal harus `YYYY-MM-DD`.
-- `periodStart` harus lebih kecil atau sama dengan `periodEnd`.
-- Jika validasi gagal, server merespon dengan status `400` dan pesan error yang menjelaskan.
-
-Status pengembangan:
-
-- `2026-06-02`: Validation middleware ditambahkan untuk endpoint laporan; unit tests untuk `reportService` dibuat dan lulus.
-- `2026-06-02`: Integration tests untuk `POST /api/reports/weekly/run` ditambahkan (supertest) dan lulus.
-
-- `2026-06-03`: Weekly job hardened: structured logging (`pino`), idempotency checks, and retry/backoff (env: `REPORT_RETRY_MAX`, `REPORT_RETRY_BASE_MS`).
-
-Metrics (stub)
-
-- The weekly job now emits simple metrics as structured log events. These are currently logged via the `utils/metrics.js` stub.
-- Emitted metric names:
-  - `reports.weekly.generated` : emitted on successful generation (labels: `periodStart`, `periodEnd`, `duration`)
-  - `reports.weekly.failed` : emitted when the job fails after retries (labels: `periodStart`, `periodEnd`, `attempts`)
-  - `reports.weekly.skipped` : emitted when a report already exists for the period (labels: `periodStart`, `periodEnd`)
-- Integration: replace `utils/metrics.js` with real exporter (Prometheus, Datadog, etc.) or forward logs to a log-based metric pipeline.
-
-  Prometheus + Grafana (local)
-
-  1.  Start services:
-
-  ```bash
-  docker-compose up -d
-  ```
-
-  2.  Ensure your app is running on port `3000` (default). Prometheus scrapes `http://host.docker.internal:3000/metrics` by default.
-
-  3.  Open Prometheus: http://localhost:9090 and Grafana: http://localhost:3001 (user: `admin`, password: `admin`).
-
-  4.  In Grafana, add a Prometheus data source pointing to `http://prometheus:9090` (when using Docker compose) or `http://localhost:9090` when accessing locally.
-
-  Notes:
-
-  - If Docker cannot resolve `host.docker.internal`, adjust `monitoring/prometheus.yml` to point directly at your host or container address.
-  - You can import dashboards in Grafana to visualize `reports_weekly_generated_total`, `reports_weekly_failed_total`, and `reports_weekly_skipped_total`.
-
-  Grafana provisioning
-
-  - The repository includes a sample Grafana dashboard and provisioning config under `monitoring/grafana`.
-  - When using `docker-compose up -d`, Grafana will auto-provision Prometheus datasource and the dashboard `Weekly Reports Overview`.
-
-  Alerting (Prometheus + Alertmanager)
-
-  - A set of alerting rules is included at `monitoring/alerting/alert.rules.yml` (failures, missing reports, high failure rate).
-  - Alertmanager is included in `docker-compose.yml` with config at `monitoring/alertmanager/alertmanager.yml`.
-  - You must configure real receivers (email, Slack, webhook) in `monitoring/alertmanager/alertmanager.yml` before expecting notifications.
-
-  Example: to run the monitoring stack including Alertmanager:
-
-  ```bash
-  docker-compose up -d
-  ```
-
-  Prometheus will send alerts to Alertmanager at `http://localhost:9093`.
-
-  Testing alerts:
-
-  - Use Prometheus UI (`/alerts`) to view firing alerts.
-  - For manual trigger during testing you can increase the failed counter via a temporary script or use Prometheus `amtool`.
-
-Contoh `curl`
-
-- Memanggil daftar laporan:
-
-```bash
-curl -s http://localhost:3000/api/reports | jq
-```
-
-- Men-trigger laporan mingguan (manual) tanpa body (server akan gunakan periode default):
-
-```bash
-curl -X POST http://localhost:3000/api/reports/weekly/run -H "Content-Type: application/json"
-```
-
-- Men-trigger laporan dengan periode custom:
-
-```bash
-curl -X POST http://localhost:3000/api/reports/weekly/run \
-	-H "Content-Type: application/json" \
-	-d '{"periodStart":"2026-05-25","periodEnd":"2026-05-31"}' | jq
-```
-
-Catatan: `jq` berguna untuk memformat output JSON di terminal, tapi opsional.
-
-## Responsive UI
-
-Semua halaman (`index`, `transactions`, `categories`, `reports`) sudah responsive dengan pattern yang konsisten:
-
-- **Desktop (≥768px)**: nav link inline di header.
-- **Mobile (<768px)**: hamburger button (☰) yang membuka dropdown menu; tap di luar atau resize ke desktop akan menutup otomatis.
-- A11y: `aria-label` dan `aria-expanded` di-update saat toggle.
-- Logika toggle ada di `public/js/nav.js`.
-
-## Status & Progress
-
-- Phase 1–9: **DONE**
-- Phase 10 (Portfolio preparation): next
-
-Commit terakhir: `014a9af test: implement API integration tests (fixes #1)`.
-
-## Catatan
-
-- Frontend saat ini hanya template dasar.
-- Ekspor format Excel/PDF tingkat lanjut dapat ditambahkan di fase masa depan; untuk saat ini ekspor CSV native sudah didukung.
-
-## Kontribusi
-
-Ini adalah proyek belajar. Jika ingin mengembangkan, fokuskan pada perbaikan:
-
-- Validasi input lebih kuat
-- UI CRUD transaksi
-- Fitur laporan mingguan/bulanan
-- Export CSV
-- Penanganan error dan user feedback
+### 3. Linting & Formatting Kode
+Guna memastikan konsistensi penulisan kode sesuai standar industri sebelum melakukan commit kode:
+*   Mengecek kesalahan gaya penulisan kode:
+    ```bash
+    npm run lint
+    ```
+*   Memperbaiki format kode secara otomatis:
+    ```bash
+    npm run format
+    ```
