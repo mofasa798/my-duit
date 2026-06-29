@@ -83,6 +83,16 @@ erDiagram
     categories ||--o{ transactions : "has many"
     reports ||--o{ report_audit : "audited by"
     
+    users {
+        INTEGER id PK
+        TEXT email UNIQUE
+        TEXT password
+        TEXT reset_token
+        TIMESTAMP reset_token_expires_at
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
     categories {
         INTEGER id PK
         TEXT name UNIQUE
@@ -130,7 +140,16 @@ erDiagram
 
 ### Detail Tabel
 
-#### 1. Tabel `categories`
+#### 1. Tabel `users`
+Menyimpan data otentikasi pengguna sistem.
+*   `id` (INTEGER, PRIMARY KEY, AUTOINCREMENT): ID unik pengguna.
+*   `email` (TEXT, NOT NULL, UNIQUE): Email pengguna yang digunakan untuk login.
+*   `password` (TEXT, NOT NULL): Kata sandi pengguna (tersimpan dalam bentuk *hash* bcrypt).
+*   `reset_token` (TEXT): Token yang digunakan untuk melakukan reset password (opsional).
+*   `reset_token_expires_at` (TIMESTAMP): Waktu kedaluwarsa token reset password.
+*   `created_at` / `updated_at` (TIMESTAMP, DEFAULT `CURRENT_TIMESTAMP`): Waktu pembuatan dan pembaruan data.
+
+#### 2. Tabel `categories`
 Menyimpan daftar kategori transaksi keuangan.
 *   `id` (INTEGER, PRIMARY KEY, AUTOINCREMENT): ID unik kategori.
 *   `name` (TEXT, NOT NULL, UNIQUE): Nama kategori (contoh: *Food, Salary, Shopping*).
@@ -178,7 +197,66 @@ Digunakan untuk implementasi *Distributed Locking* guna menghindari duplikasi ek
 
 Setiap endpoint mengembalikan respons berupa format JSON dengan pola seragam: `{ success: true/false, data: ... }` atau `{ success: false, message: ... }`.
 
-### 1. Kategori / Categories API (`/api/categories`)
+*Catatan Penting:* Sebagian besar endpoint (kecuali otentikasi dan health check) merupakan rute privat/terlindungi (*protected route*). Anda diwajibkan untuk menyertakan JSON Web Token (JWT) pada HTTP Header request Anda: `Authorization: Bearer <token>`.
+
+### 1. Autentikasi / Auth API (`/api/auth`)
+
+*   **`POST /api/auth/register`**
+    *   **Deskripsi:** Mendaftarkan pengguna baru ke dalam sistem.
+    *   **Body (JSON):**
+        ```json
+        {
+          "email": "user@example.com",
+          "password": "securepassword"
+        }
+        ```
+    *   **Respons (201 Created):**
+        ```json
+        {
+          "success": true,
+          "message": "User registered successfully",
+          "userId": 1
+        }
+        ```
+
+*   **`POST /api/auth/login`**
+    *   **Deskripsi:** Masuk menggunakan email dan kata sandi untuk mendapatkan JWT.
+    *   **Body (JSON):**
+        ```json
+        {
+          "email": "user@example.com",
+          "password": "securepassword"
+        }
+        ```
+    *   **Respons (200 OK):**
+        ```json
+        {
+          "success": true,
+          "message": "Logged in successfully",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+        }
+        ```
+
+*   **`POST /api/auth/forgot-password`**
+    *   **Deskripsi:** Meminta reset token apabila pengguna lupa kata sandi. (Sistem akan me-mock pengiriman email dengan memunculkannya di log console).
+    *   **Body (JSON):**
+        ```json
+        {
+          "email": "user@example.com"
+        }
+        ```
+
+*   **`POST /api/auth/reset-password`**
+    *   **Deskripsi:** Mengubah kata sandi menggunakan reset token yang didapatkan.
+    *   **Body (JSON):**
+        ```json
+        {
+          "token": "a1b2c3d4e5f6...",
+          "newPassword": "newpassword123"
+        }
+        ```
+
+### 2. Kategori / Categories API (`/api/categories`)
 
 *   **`GET /api/categories`**
     *   **Deskripsi:** Mengambil semua daftar kategori yang ada.
@@ -236,7 +314,7 @@ Setiap endpoint mengembalikan respons berupa format JSON dengan pola seragam: `{
         }
         ```
 
-### 2. Transaksi / Transactions API (`/api/transactions`)
+### 3. Transaksi / Transactions API (`/api/transactions`)
 
 *   **`GET /api/transactions`**
     *   **Deskripsi:** Mengambil daftar transaksi keuangan. Mendukung filter pencarian melalui Query Parameters.
@@ -304,7 +382,7 @@ Setiap endpoint mengembalikan respons berupa format JSON dengan pola seragam: `{
         }
         ```
 
-### 3. Dashboard API (`/api/dashboard`)
+### 4. Dashboard API (`/api/dashboard`)
 
 *   **`GET /api/dashboard`**
     *   **Deskripsi:** Mengambil metrik total pemasukan, total pengeluaran, saldo bersih saat ini, serta ringkasan tren.
@@ -320,7 +398,7 @@ Setiap endpoint mengembalikan respons berupa format JSON dengan pola seragam: `{
         }
         ```
 
-### 4. Laporan / Reports API (`/api/reports`)
+### 5. Laporan / Reports API (`/api/reports`)
 
 *   **`GET /api/reports`**
     *   **Deskripsi:** Mengambil semua riwayat laporan mingguan dan bulanan yang telah dibuat.
@@ -356,7 +434,7 @@ Setiap endpoint mengembalikan respons berupa format JSON dengan pola seragam: `{
         ```
     *   **Respons (200 OK):** Mengembalikan data objek laporan bulanan yang berhasil dibuat.
 
-### 5. Ekspor Data / Export API (`/api/export`)
+### 6. Ekspor Data / Export API (`/api/export`)
 
 *   **`GET /api/export/transactions/csv`**
     *   **Deskripsi:** Mengunduh semua riwayat transaksi dalam format CSV secara langsung.
@@ -366,7 +444,7 @@ Setiap endpoint mengembalikan respons berupa format JSON dengan pola seragam: `{
     *   **Deskripsi:** Mengunduh semua riwayat laporan ringkasan dalam format CSV.
     *   **Header Respons:** `Content-Type: text/csv`, `Content-Disposition: attachment; filename=reports.csv`.
 
-### 6. Health & Metrik API
+### 7. Health & Metrik API
 
 *   **`GET /api/health`**
     *   **Deskripsi:** Memeriksa status kesehatan server aplikasi.
