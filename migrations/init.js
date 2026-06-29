@@ -33,6 +33,16 @@ db.run('PRAGMA foreign_keys = ON');
 const createTables = () => {
   return new Promise((resolve, reject) => {
     const sql = `
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        reset_token TEXT,
+        reset_token_expires_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
       CREATE TABLE IF NOT EXISTS categories (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL UNIQUE,
@@ -83,7 +93,7 @@ const createTables = () => {
     db.exec(sql, (err) => {
       if (err) return reject(err);
       console.log(
-        '✓ Created tables (categories, transactions, reports, report_audit, locks)'
+        '✓ Created tables (users, categories, transactions, reports, report_audit, locks)'
       );
       resolve();
     });

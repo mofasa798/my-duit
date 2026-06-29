@@ -12,6 +12,7 @@ const express = require('express');
 const path = require('path');
 
 const db = require('./config/database');
+const authRouter = require('./routes/auth');
 const categoriesRouter = require('./routes/categories');
 const transactionsRouter = require('./routes/transactions');
 const dashboardRouter = require('./routes/dashboard');
@@ -20,6 +21,7 @@ const exportRouter = require('./routes/export');
 const weeklyJob = require('./jobs/weeklyReport');
 const monthlyJob = require('./jobs/monthlyReport');
 const metrics = require('./utils/metrics');
+const auth = require('./middleware/auth');
 
 const app = express();
 
@@ -58,11 +60,12 @@ app.get('/api/health/job', async (req, res, next) => {
 });
 
 // API route mounting
-app.use('/api/categories', categoriesRouter);
-app.use('/api/transactions', transactionsRouter);
-app.use('/api/dashboard', dashboardRouter);
-app.use('/api/reports', reportsRouter);
-app.use('/api/export', exportRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/categories', auth.authenticate, categoriesRouter);
+app.use('/api/transactions', auth.authenticate, transactionsRouter);
+app.use('/api/dashboard', auth.authenticate, dashboardRouter);
+app.use('/api/reports', auth.authenticate, reportsRouter);
+app.use('/api/export', auth.authenticate, exportRouter);
 
 // Prometheus metrics endpoint
 app.get('/metrics', metrics.metricsMiddleware);
