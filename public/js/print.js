@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <th>Type</th>
               <th class="text-right">Income</th>
               <th class="text-right">Expense</th>
-              <th class="text-right">Balance</th>
+              <th class="text-right">Net Savings</th>
               <th>Generated At</th>
             </tr>
           </thead>
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <td style="text-transform: capitalize">${report.report_type}</td>
             <td class="text-right" style="color: #006600">${formatCurrency(report.total_income)}</td>
             <td class="text-right" style="color: #cc0000">${formatCurrency(report.total_expense)}</td>
-            <td class="text-right font-weight: bold">${formatCurrency(report.balance)}</td>
+            <td class="text-right font-weight: bold">${formatCurrency(report.net_savings)}</td>
             <td>${new Date(report.generated_at).toLocaleString('id-ID')}</td>
           </tr>
         `;

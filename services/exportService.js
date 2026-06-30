@@ -43,7 +43,7 @@ const exportReportsCSV = (reports) => {
     { key: 'period_end', label: 'Period End' },
     { key: 'total_income', label: 'Total Income' },
     { key: 'total_expense', label: 'Total Expense' },
-    { key: 'balance', label: 'Balance' },
+    { key: 'net_savings', label: 'Net Savings' },
     { key: 'generated_at', label: 'Generated At' },
   ];
   return generateCSV(reports, columns);
