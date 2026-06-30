@@ -56,7 +56,7 @@ const runMonthlyReport = async (periodStartArg, periodEndArg) => {
         periodEnd,
         details: { reason: 'already_exists' },
       });
-      const report = await reportService.computeWeeklyReport(
+      const report = await reportService.computeMonthlyReport(
         periodStart,
         periodEnd
       );

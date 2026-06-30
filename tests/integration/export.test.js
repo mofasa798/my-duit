@@ -25,7 +25,7 @@ describe('API Export (/api/export)', () => {
       expect(res.status).toBe(200);
       expect(res.header['content-type']).toContain('text/csv');
       expect(res.header['content-disposition']).toContain('attachment; filename=reports.csv');
-      expect(res.text).toContain('"ID","Type","Period Start","Period End","Total Income","Total Expense","Balance","Generated At"');
+      expect(res.text).toContain('"ID","Type","Period Start","Period End","Total Income","Total Expense","Net Savings","Generated At"');
       expect(res.text).toContain('1000');
     });
   });
