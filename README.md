@@ -18,8 +18,10 @@ Aplikasi ini dibangun menggunakan tumpukan teknologi modern, efisien, dan tanggu
 *   **Containerization & Monitoring:** Docker, Docker Compose, Prometheus, Grafana, Alertmanager
 
 ### 2. Library & Dependencies
+*   `bcrypt` (`^6.0.0`): Library untuk melakukan *hashing* kata sandi pengguna sebelum disimpan ke database.
 *   `dotenv` (`^16.0.3`): Digunakan untuk memuat variabel lingkungan dari file `.env`.
 *   `express` (`^4.18.2`): Framework web minimalis untuk routing dan middleware API HTTP.
+*   `jsonwebtoken` (`^9.0.3`): Implementasi JSON Web Token (JWT) untuk otentikasi dan pertukaran informasi antar pihak secara aman.
 *   `sqlite3` (`^5.1.6`): Driver database SQLite untuk penyimpanan relasional berbasis file.
 *   `node-cron` (`^3.0.2`): Scheduler untuk menjalankan laporan otomatis (mingguan/bulanan) di latar belakang.
 *   `pino` (`^8.14.0`) & `pino-pretty` (`^9.2.0`): Logger berkinerja tinggi untuk log terstruktur dan mudah dibaca di terminal.
@@ -80,6 +82,8 @@ Database menggunakan model relasional yang disimpan dalam file tunggal SQLite (`
 
 ```mermaid
 erDiagram
+    users ||--o{ transactions : "has many"
+    users ||--o{ reports : "has many"
     categories ||--o{ transactions : "has many"
     reports ||--o{ report_audit : "audited by"
     
@@ -102,6 +106,7 @@ erDiagram
 
     transactions {
         INTEGER id PK
+        INTEGER user_id FK
         INTEGER category_id FK
         DECIMAL amount
         TEXT description
@@ -112,6 +117,7 @@ erDiagram
 
     reports {
         INTEGER id PK
+        INTEGER user_id FK
         TEXT report_type "weekly | monthly"
         DATE period_start
         DATE period_end
@@ -159,6 +165,7 @@ Menyimpan daftar kategori transaksi keuangan.
 #### 2. Tabel `transactions`
 Menyimpan detail transaksi pemasukan dan pengeluaran harian.
 *   `id` (INTEGER, PRIMARY KEY, AUTOINCREMENT): ID unik transaksi.
+*   `user_id` (INTEGER, NOT NULL): Referensi ke tabel `users(id)` sebagai pemilik transaksi. Memastikan data isolation antar pengguna.
 *   `category_id` (INTEGER, NOT NULL): Referensi ke tabel `categories(id)`. Memiliki batasan `ON DELETE RESTRICT` agar kategori yang memiliki transaksi tidak dapat dihapus.
 *   `amount` (DECIMAL(10, 2), NOT NULL): Nominal transaksi. Memiliki batasan cek `CHECK(amount > 0)`.
 *   `description` (TEXT): Keterangan opsional mengenai transaksi.
@@ -168,6 +175,7 @@ Menyimpan detail transaksi pemasukan dan pengeluaran harian.
 #### 3. Tabel `reports`
 Menyimpan ringkasan laporan periodik yang di-generate otomatis oleh scheduler atau manual.
 *   `id` (INTEGER, PRIMARY KEY, AUTOINCREMENT): ID unik laporan.
+*   `user_id` (INTEGER, NULLABLE): Referensi ke tabel `users(id)`. Jika terisi, laporan hanya tampil untuk pengguna tersebut. Jika NULL, laporan bersifat sistem.
 *   `report_type` (TEXT, NOT NULL): Jenis laporan. Berisi `'weekly'` (mingguan) atau `'monthly'` (bulanan).
 *   `period_start` (DATE, NOT NULL): Tanggal mulai periode laporan.
 *   `period_end` (DATE, NOT NULL): Tanggal akhir periode laporan.
@@ -197,7 +205,9 @@ Digunakan untuk implementasi *Distributed Locking* guna menghindari duplikasi ek
 
 Setiap endpoint mengembalikan respons berupa format JSON dengan pola seragam: `{ success: true/false, data: ... }` atau `{ success: false, message: ... }`.
 
-*Catatan Penting:* Sebagian besar endpoint (kecuali otentikasi dan health check) merupakan rute privat/terlindungi (*protected route*). Anda diwajibkan untuk menyertakan JSON Web Token (JWT) pada HTTP Header request Anda: `Authorization: Bearer <token>`.
+*Catatan Penting:* Sebagian besar endpoint (kecuali otentikasi `/api/auth/*` dan health check) merupakan rute privat/terlindungi (*protected route*). Anda diwajibkan untuk menyertakan JSON Web Token (JWT) pada HTTP Header request Anda: `Authorization: Bearer <token>`.
+
+Token JWT dapat diperoleh melalui halaman **Login** (`/html/login.html`) atau endpoint **`POST /api/auth/login`**.
 
 ### 1. Autentikasi / Auth API (`/api/auth`)
 
@@ -506,6 +516,12 @@ npm run init:db
 ```
 *Catatan: Sistem juga memiliki fitur auto-initialization pada startup, jika mendeteksi file `finance.db` belum tersedia saat aplikasi mulai berjalan, sistem akan membuatnya secara otomatis.*
 
+### 6. Migrasi Database (Jika Upgrade dari Versi Lama)
+Jika Anda sudah memiliki database lama dan perlu menambahkan kolom `user_id` untuk data isolation:
+```bash
+npm run db:migrate
+```
+
 ---
 
 ## 🏃 Cara Menjalankan Aplikasi
@@ -518,7 +534,9 @@ Menjalankan server menggunakan `nodemon` untuk restart otomatis ketika kode Java
 npm run dev
 ```
 Buka browser Anda dan akses aplikasi melalui tautan:
-*   Dashboard utama: `http://localhost:3000`
+*   Login: `http://localhost:3000/html/login.html`
+*   Register: `http://localhost:3000/html/register.html`
+*   Dashboard utama (setelah login): `http://localhost:3000`
 *   Pengelolaan Kategori: `http://localhost:3000/html/categories.html`
 *   Pencatatan Transaksi: `http://localhost:3000/html/transactions.html`
 *   Laporan Ringkasan: `http://localhost:3000/html/reports.html`
