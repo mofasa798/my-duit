@@ -119,7 +119,7 @@ describe('API Categories (/api/categories)', () => {
 
     it('Skenario 11: returns 400 if used by transactions (FOREIGN KEY constraint)', async () => {
       const { lastID: catID } = await db.runAsync("INSERT INTO categories (name, type) VALUES ('InUse', 'expense')");
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 100, '2026-06-01')", [catID]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 100, '2026-06-01')", [catID]);
 
       const res = await request(app).delete(`/api/categories/${catID}`);
       expect(res.status).toBe(400);

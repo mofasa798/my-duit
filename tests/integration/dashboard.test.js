@@ -16,8 +16,8 @@ describe('API Dashboard (/api/dashboard)', () => {
     const r1 = await db.runAsync("INSERT INTO categories (name, type) VALUES ('Food', 'expense')");
     const r2 = await db.runAsync("INSERT INTO categories (name, type) VALUES ('Salary', 'income')");
 
-    await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 150.50, '2026-06-01')", [r1.lastID]);
-    await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 1000, '2026-06-01')", [r2.lastID]);
+    await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 150.50, '2026-06-01')", [r1.lastID]);
+    await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 1000, '2026-06-01')", [r2.lastID]);
 
     const res = await request(app).get('/api/dashboard');
     expect(res.status).toBe(200);

@@ -14,7 +14,7 @@ describe('API System Endpoints', () => {
   describe('GET /api/health/job', () => {
     it('Skenario 2: returns job health/audit status', async () => {
       const db = require('../../config/database');
-      await db.runAsync("INSERT INTO reports (report_type, period_start, period_end) VALUES ('weekly', '2026-06-01', '2026-06-07')");
+      await db.runAsync("INSERT INTO reports (user_id, report_type, period_start, period_end) VALUES (1, 'weekly', '2026-06-01', '2026-06-07')");
       await db.runAsync("INSERT INTO report_audit (action, details) VALUES ('generated', 'Test details')");
 
       const res = await request(app).get('/api/health/job');

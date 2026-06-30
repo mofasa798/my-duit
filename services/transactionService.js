@@ -4,6 +4,10 @@ const buildFilterQuery = (filters) => {
   const conditions = [];
   const values = [];
 
+  // Selalu filter berdasarkan user
+  conditions.push('t.user_id = ?');
+  values.push(filters.user_id);
+
   if (filters.category_id) {
     conditions.push('t.category_id = ?');
     values.push(filters.category_id);
@@ -55,43 +59,45 @@ const getAllTransactions = async (filters = {}) => {
   return allAsync(sql, values);
 };
 
-const getTransactionById = async (id) => {
+const getTransactionById = async (id, userId) => {
   return getAsync(
     `SELECT t.id, t.description, t.amount, t.transaction_date AS date, t.category_id, c.name AS category, c.type
      FROM transactions t
      JOIN categories c ON t.category_id = c.id
-     WHERE t.id = ?`,
-    [id]
+     WHERE t.id = ? AND t.user_id = ?`,
+    [id, userId]
   );
 };
 
 const createTransaction = async ({
+  user_id,
   category_id,
   amount,
   description,
   transaction_date,
 }) => {
   return runAsync(
-    `INSERT INTO transactions (category_id, amount, description, transaction_date)
-     VALUES (?, ?, ?, ?)`,
-    [category_id, amount, description || '', transaction_date]
+    `INSERT INTO transactions (user_id, category_id, amount, description, transaction_date)
+     VALUES (?, ?, ?, ?, ?)`,
+    [user_id, category_id, amount, description || '', transaction_date]
   );
 };
 
 const updateTransaction = async (
   id,
+  userId,
   { category_id, amount, description, transaction_date }
 ) => {
   return runAsync(
     `UPDATE transactions
      SET category_id = ?, amount = ?, description = ?, transaction_date = ?, updated_at = CURRENT_TIMESTAMP
-     WHERE id = ?`,
-    [category_id, amount, description || '', transaction_date, id]
+     WHERE id = ? AND user_id = ?`,
+    [category_id, amount, description || '', transaction_date, id, userId]
   );
 };
 
-const deleteTransaction = async (id) => {
-  return runAsync('DELETE FROM transactions WHERE id = ?', [id]);
+const deleteTransaction = async (id, userId) => {
+  return runAsync('DELETE FROM transactions WHERE id = ? AND user_id = ?', [id, userId]);
 };
 
 module.exports = {

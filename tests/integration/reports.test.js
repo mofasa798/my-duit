@@ -19,8 +19,8 @@ const db = require('../../config/database');
 describe('API Reports (/api/reports)', () => {
   describe('GET /api/reports', () => {
     it('Skenario 1: lists reports descending by generated_at', async () => {
-      await db.runAsync("INSERT INTO reports (report_type, period_start, period_end, generated_at) VALUES ('weekly', '2026-06-01', '2026-06-07', '2026-06-08 10:00:00')");
-      await db.runAsync("INSERT INTO reports (report_type, period_start, period_end, generated_at) VALUES ('weekly', '2026-06-08', '2026-06-14', '2026-06-15 10:00:00')");
+      await db.runAsync("INSERT INTO reports (user_id, report_type, period_start, period_end, generated_at) VALUES (1, 'weekly', '2026-06-01', '2026-06-07', '2026-06-08 10:00:00')");
+      await db.runAsync("INSERT INTO reports (user_id, report_type, period_start, period_end, generated_at) VALUES (1, 'weekly', '2026-06-08', '2026-06-14', '2026-06-15 10:00:00')");
 
       const res = await request(app).get('/api/reports');
       expect(res.status).toBe(200);

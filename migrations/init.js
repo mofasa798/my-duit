@@ -52,6 +52,7 @@ const createTables = () => {
 
       CREATE TABLE IF NOT EXISTS transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL REFERENCES users(id),
         category_id INTEGER NOT NULL,
         amount DECIMAL(10, 2) NOT NULL CHECK(amount > 0),
         description TEXT,
@@ -63,6 +64,7 @@ const createTables = () => {
 
       CREATE TABLE IF NOT EXISTS reports (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER REFERENCES users(id),
         report_type TEXT NOT NULL CHECK(report_type IN ('weekly', 'monthly')),
         period_start DATE NOT NULL,
         period_end DATE NOT NULL,

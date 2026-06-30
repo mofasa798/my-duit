@@ -1,18 +1,20 @@
 const { allAsync, getAsync } = require('../config/database');
 
-const getDashboardSummary = async () => {
+const getDashboardSummary = async (userId) => {
   const incomeResult = await getAsync(
     `SELECT COALESCE(SUM(t.amount), 0) AS totalIncome
      FROM transactions t
      JOIN categories c ON t.category_id = c.id
-     WHERE c.type = 'income'`
+     WHERE c.type = 'income' AND t.user_id = ?`,
+    [userId]
   );
 
   const expenseResult = await getAsync(
     `SELECT COALESCE(SUM(t.amount), 0) AS totalExpense
      FROM transactions t
      JOIN categories c ON t.category_id = c.id
-     WHERE c.type = 'expense'`
+     WHERE c.type = 'expense' AND t.user_id = ?`,
+    [userId]
   );
 
   const transactions = await allAsync(
@@ -25,8 +27,10 @@ const getDashboardSummary = async () => {
        c.type
      FROM transactions t
      JOIN categories c ON t.category_id = c.id
+     WHERE t.user_id = ?
      ORDER BY t.transaction_date DESC, t.created_at DESC
-     LIMIT 10`
+     LIMIT 10`,
+    [userId]
   );
 
   const totalIncome = incomeResult.totalIncome || 0;

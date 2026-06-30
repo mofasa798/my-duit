@@ -46,9 +46,8 @@ class ApiClient {
    * @param {string} endpoint - API endpoint (e.g. /transactions)
    * @param {string} method - HTTP method (GET, POST, PUT, DELETE)
    * @param {object} data - Request body (untuk POST/PUT)
-   * @param {boolean} auth - Whether to include auth token
    */
-  async request(endpoint, method = 'GET', data = null, auth = false) {
+  async request(endpoint, method = 'GET', data = null) {
     const url = `${this.baseURL}${endpoint}`;
     const options = {
       method,
@@ -57,12 +56,10 @@ class ApiClient {
       },
     };
 
-    // Attach token if needed
-    if (auth) {
-      const token = this.getToken();
-      if (token) {
-        options.headers['Authorization'] = `Bearer ${token}`;
-      }
+    // Selalu attach token jika ada (protected endpoints membutuhkannya)
+    const token = this.getToken();
+    if (token) {
+      options.headers['Authorization'] = `Bearer ${token}`;
     }
 
     if (data) {
@@ -72,8 +69,16 @@ class ApiClient {
     try {
       const response = await fetch(url, options);
 
+      // Jika 401 (Unauthorized), redirect ke login
+      if (response.status === 401) {
+        this.clearToken();
+        window.location.href = '/html/login.html';
+        throw new Error('Unauthorized');
+      }
+
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const errBody = await response.json().catch(() => ({}));
+        throw new Error(errBody.message || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       const result = await response.json();
