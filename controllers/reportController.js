@@ -5,7 +5,8 @@ const monthlyJob = require('../jobs/monthlyReport');
 const listReports = async (req, res, next) => {
   try {
     const reports = await require('../config/database').allAsync(
-      'SELECT * FROM reports ORDER BY generated_at DESC'
+      'SELECT * FROM reports WHERE user_id = ? ORDER BY generated_at DESC',
+      [req.user.id]
     );
     res.json({ success: true, data: reports });
   } catch (err) {

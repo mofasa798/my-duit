@@ -15,6 +15,12 @@ class Dashboard {
   }
 
   async init() {
+    // Redirect ke login jika belum autentikasi
+    if (!apiClient.isAuthenticated()) {
+      window.location.href = '/html/login.html';
+      return;
+    }
+
     try {
       this.setStatus('Memuat dashboard...', 'info');
 

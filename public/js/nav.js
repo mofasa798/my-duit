@@ -3,6 +3,7 @@
  *
  * - Auto-highlight nav link aktif berdasarkan URL
  * - Hamburger menu toggle untuk tampilan mobile
+ * - Auth-aware nav (login/logout buttons)
  */
 document.addEventListener('DOMContentLoaded', () => {
   const currentPath = window.location.pathname;
@@ -21,6 +22,27 @@ document.addEventListener('DOMContentLoaded', () => {
     ) {
       link.classList.add('active');
     }
+  });
+
+  // ===== Auth-aware nav =====
+  const isLoggedIn = !!localStorage.getItem('token');
+  const authEls = document.querySelectorAll('.nav-auth');
+  const loginBtns = document.querySelectorAll('#nav-login, #nav-login-mobile');
+  const logoutBtns = document.querySelectorAll('#nav-logout, #nav-logout-mobile');
+
+  if (isLoggedIn) {
+    loginBtns.forEach((el) => el.classList.add('hidden'));
+    logoutBtns.forEach((el) => el.classList.remove('hidden'));
+  } else {
+    loginBtns.forEach((el) => el.classList.remove('hidden'));
+    logoutBtns.forEach((el) => el.classList.add('hidden'));
+  }
+
+  logoutBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = '/html/login.html';
+    });
   });
 
   // ===== Hamburger toggle =====

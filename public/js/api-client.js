@@ -14,6 +14,34 @@ class ApiClient {
   }
 
   /**
+   * Ambil token dari localStorage
+   */
+  getToken() {
+    return localStorage.getItem('token');
+  }
+
+  /**
+   * Simpan token ke localStorage
+   */
+  setToken(token) {
+    localStorage.setItem('token', token);
+  }
+
+  /**
+   * Hapus token dari localStorage
+   */
+  clearToken() {
+    localStorage.removeItem('token');
+  }
+
+  /**
+   * Cek apakah user sudah login
+   */
+  isAuthenticated() {
+    return !!this.getToken();
+  }
+
+  /**
    * Membuat HTTP request
    * @param {string} endpoint - API endpoint (e.g. /transactions)
    * @param {string} method - HTTP method (GET, POST, PUT, DELETE)
@@ -28,6 +56,12 @@ class ApiClient {
       },
     };
 
+    // Selalu attach token jika ada (protected endpoints membutuhkannya)
+    const token = this.getToken();
+    if (token) {
+      options.headers['Authorization'] = `Bearer ${token}`;
+    }
+
     if (data) {
       options.body = JSON.stringify(data);
     }
@@ -35,8 +69,16 @@ class ApiClient {
     try {
       const response = await fetch(url, options);
 
+      // Jika 401 (Unauthorized), redirect ke login
+      if (response.status === 401) {
+        this.clearToken();
+        window.location.href = '/html/login.html';
+        throw new Error('Unauthorized');
+      }
+
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const errBody = await response.json().catch(() => ({}));
+        throw new Error(errBody.message || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       const result = await response.json();
@@ -45,6 +87,16 @@ class ApiClient {
       console.error(`API Error [${method} ${url}]:`, error);
       throw error;
     }
+  }
+
+  // ==================== AUTH ====================
+
+  async register(email, password) {
+    return this.request('/auth/register', 'POST', { email, password });
+  }
+
+  async login(email, password) {
+    return this.request('/auth/login', 'POST', { email, password });
   }
 
   // ==================== CATEGORIES ====================

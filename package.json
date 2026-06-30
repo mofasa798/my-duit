@@ -13,6 +13,7 @@
     "test:api": "node scripts/test-api.js",
     "run:weekly": "node scripts/run-weekly.js",
     "db:seed": "node scripts/seed.js",
+    "db:migrate": "node migrations/add_user_id.js",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

@@ -14,8 +14,8 @@ describe('API Transactions (/api/transactions)', () => {
 
   describe('GET /api/transactions', () => {
     it('Skenario 1: returns all transactions without filters', async () => {
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 100, '2026-06-01')", [catFoodId]);
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 500, '2026-06-02')", [catSalaryId]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 100, '2026-06-01')", [catFoodId]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 500, '2026-06-02')", [catSalaryId]);
 
       const res = await request(app).get('/api/transactions');
       expect(res.status).toBe(200);
@@ -24,8 +24,8 @@ describe('API Transactions (/api/transactions)', () => {
     });
 
     it('Skenario 2: filters by category_id', async () => {
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 100, '2026-06-01')", [catFoodId]);
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 500, '2026-06-02')", [catSalaryId]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 100, '2026-06-01')", [catFoodId]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 500, '2026-06-02')", [catSalaryId]);
 
       const res = await request(app).get(`/api/transactions?category_id=${catFoodId}`);
       expect(res.status).toBe(200);
@@ -34,8 +34,8 @@ describe('API Transactions (/api/transactions)', () => {
     });
 
     it('Skenario 3: filters by type (income/expense)', async () => {
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 100, '2026-06-01')", [catFoodId]);
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 500, '2026-06-02')", [catSalaryId]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 100, '2026-06-01')", [catFoodId]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 500, '2026-06-02')", [catSalaryId]);
 
       const res = await request(app).get('/api/transactions?type=income');
       expect(res.status).toBe(200);
@@ -44,8 +44,8 @@ describe('API Transactions (/api/transactions)', () => {
     });
 
     it('Skenario 4: filters by date range (date_from, date_to)', async () => {
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 100, '2026-06-01')", [catFoodId]);
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 500, '2026-06-10')", [catSalaryId]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 100, '2026-06-01')", [catFoodId]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 500, '2026-06-10')", [catSalaryId]);
 
       const res = await request(app).get('/api/transactions?date_from=2026-06-05&date_to=2026-06-15');
       expect(res.status).toBe(200);
@@ -54,8 +54,8 @@ describe('API Transactions (/api/transactions)', () => {
     });
 
     it('Skenario 5: filters by search keyword in description', async () => {
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date, description) VALUES (?, 100, '2026-06-01', 'Lunch at KFC')", [catFoodId]);
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date, description) VALUES (?, 500, '2026-06-02', 'Monthly Salary')", [catSalaryId]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date, description) VALUES (1, ?, 100, '2026-06-01', 'Lunch at KFC')", [catFoodId]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date, description) VALUES (1, ?, 500, '2026-06-02', 'Monthly Salary')", [catSalaryId]);
 
       const res = await request(app).get('/api/transactions?search=KFC');
       expect(res.status).toBe(200);
@@ -105,7 +105,7 @@ describe('API Transactions (/api/transactions)', () => {
 
   describe('PUT /api/transactions/:id', () => {
     it('Skenario 10: updates an existing transaction', async () => {
-      const { lastID } = await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 100, '2026-06-01')", [catFoodId]);
+      const { lastID } = await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 100, '2026-06-01')", [catFoodId]);
 
       const res = await request(app)
         .put(`/api/transactions/${lastID}`)
@@ -125,7 +125,7 @@ describe('API Transactions (/api/transactions)', () => {
     });
 
     it('Skenario 12: returns 400 when missing required fields in update', async () => {
-      const { lastID } = await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 100, '2026-06-01')", [catFoodId]);
+      const { lastID } = await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 100, '2026-06-01')", [catFoodId]);
 
       const res = await request(app).put(`/api/transactions/${lastID}`).send({ amount: 200 }); // missing category_id and date
       expect(res.status).toBe(400);
@@ -134,7 +134,7 @@ describe('API Transactions (/api/transactions)', () => {
 
   describe('DELETE /api/transactions/:id', () => {
     it('Skenario 13: deletes an existing transaction', async () => {
-      const { lastID } = await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 100, '2026-06-01')", [catFoodId]);
+      const { lastID } = await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 100, '2026-06-01')", [catFoodId]);
 
       const res = await request(app).delete(`/api/transactions/${lastID}`);
       expect(res.status).toBe(200);

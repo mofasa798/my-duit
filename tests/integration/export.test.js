@@ -6,7 +6,7 @@ describe('API Export (/api/export)', () => {
   describe('GET /api/export/transactions/csv', () => {
     it('Skenario 1: returns CSV file for transactions', async () => {
       const { lastID } = await db.runAsync("INSERT INTO categories (name, type) VALUES ('Food', 'expense')");
-      await db.runAsync("INSERT INTO transactions (category_id, amount, transaction_date) VALUES (?, 100, '2026-06-01')", [lastID]);
+      await db.runAsync("INSERT INTO transactions (user_id, category_id, amount, transaction_date) VALUES (1, ?, 100, '2026-06-01')", [lastID]);
 
       const res = await request(app).get('/api/export/transactions/csv');
       expect(res.status).toBe(200);
@@ -19,7 +19,7 @@ describe('API Export (/api/export)', () => {
 
   describe('GET /api/export/reports/csv', () => {
     it('Skenario 2: returns CSV file for reports', async () => {
-      await db.runAsync("INSERT INTO reports (report_type, period_start, period_end, total_income, total_expense, net_savings) VALUES ('weekly', '2026-06-01', '2026-06-07', 1000, 200, 800)");
+      await db.runAsync("INSERT INTO reports (user_id, report_type, period_start, period_end, total_income, total_expense, net_savings) VALUES (1, 'weekly', '2026-06-01', '2026-06-07', 1000, 200, 800)");
 
       const res = await request(app).get('/api/export/reports/csv');
       expect(res.status).toBe(200);

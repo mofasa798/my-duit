@@ -3,6 +3,7 @@ const transactionService = require('../services/transactionService');
 const getTransactions = async (req, res, next) => {
   try {
     const filters = {
+      user_id: req.user.id,
       category_id: req.query.category_id,
       type: req.query.type,
       date_from: req.query.date_from,
@@ -29,6 +30,7 @@ const createTransaction = async (req, res, next) => {
     }
 
     const result = await transactionService.createTransaction({
+      user_id: req.user.id,
       category_id,
       amount,
       description,
@@ -70,14 +72,14 @@ const updateTransaction = async (req, res, next) => {
       });
     }
 
-    const existing = await transactionService.getTransactionById(id);
+    const existing = await transactionService.getTransactionById(id, req.user.id);
     if (!existing) {
       return res
         .status(404)
         .json({ success: false, message: 'Transaction not found' });
     }
 
-    const result = await transactionService.updateTransaction(id, {
+    const result = await transactionService.updateTransaction(id, req.user.id, {
       category_id,
       amount,
       description,
@@ -116,14 +118,14 @@ const updateTransaction = async (req, res, next) => {
 const deleteTransaction = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const existing = await transactionService.getTransactionById(id);
+    const existing = await transactionService.getTransactionById(id, req.user.id);
     if (!existing) {
       return res
         .status(404)
         .json({ success: false, message: 'Transaction not found' });
     }
 
-    await transactionService.deleteTransaction(id);
+    await transactionService.deleteTransaction(id, req.user.id);
     res.json({ success: true, message: 'Transaction deleted successfully' });
   } catch (error) {
     next(error);
