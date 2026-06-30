@@ -14,12 +14,41 @@ class ApiClient {
   }
 
   /**
+   * Ambil token dari localStorage
+   */
+  getToken() {
+    return localStorage.getItem('token');
+  }
+
+  /**
+   * Simpan token ke localStorage
+   */
+  setToken(token) {
+    localStorage.setItem('token', token);
+  }
+
+  /**
+   * Hapus token dari localStorage
+   */
+  clearToken() {
+    localStorage.removeItem('token');
+  }
+
+  /**
+   * Cek apakah user sudah login
+   */
+  isAuthenticated() {
+    return !!this.getToken();
+  }
+
+  /**
    * Membuat HTTP request
    * @param {string} endpoint - API endpoint (e.g. /transactions)
    * @param {string} method - HTTP method (GET, POST, PUT, DELETE)
    * @param {object} data - Request body (untuk POST/PUT)
+   * @param {boolean} auth - Whether to include auth token
    */
-  async request(endpoint, method = 'GET', data = null) {
+  async request(endpoint, method = 'GET', data = null, auth = false) {
     const url = `${this.baseURL}${endpoint}`;
     const options = {
       method,
@@ -27,6 +56,14 @@ class ApiClient {
         'Content-Type': 'application/json',
       },
     };
+
+    // Attach token if needed
+    if (auth) {
+      const token = this.getToken();
+      if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
 
     if (data) {
       options.body = JSON.stringify(data);
@@ -45,6 +82,16 @@ class ApiClient {
       console.error(`API Error [${method} ${url}]:`, error);
       throw error;
     }
+  }
+
+  // ==================== AUTH ====================
+
+  async register(email, password) {
+    return this.request('/auth/register', 'POST', { email, password });
+  }
+
+  async login(email, password) {
+    return this.request('/auth/login', 'POST', { email, password });
   }
 
   // ==================== CATEGORIES ====================
